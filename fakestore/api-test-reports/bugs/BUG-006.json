@@ -1,0 +1,59 @@
+{
+  "bug_id": "BUG-006",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "Create and update accept empty and invalid data for products, carts and users",
+  "description": "The system creates products, carts and users even when the form is empty or clearly wrong - a price written as text or below zero, a picture link that isn't a link, a cart for a customer or product that doesn't exist, a negative or zero quantity, an email that isn't an email, an account with no password - and says 'created successfully'. It should refuse and say which detail is wrong.",
+  "severity": "Medium",
+  "priority": "P2",
+  "method": "POST",
+  "endpoint": "/carts",
+  "test_case_id": "FS-PRODUCTS-014",
+  "test_case_ids": [
+    "FS-PRODUCTS-014",
+    "FS-PRODUCTS-015",
+    "FS-PRODUCTS-022",
+    "FS-CARTS-014",
+    "FS-CARTS-015",
+    "FS-CARTS-016",
+    "FS-CARTS-017",
+    "FS-CARTS-018",
+    "FS-CARTS-024",
+    "FS-USERS-011",
+    "FS-USERS-012",
+    "FS-USERS-013",
+    "FS-USERS-019"
+  ],
+  "category": "Input validation",
+  "preconditions": "None",
+  "steps": [
+    "Send POST /carts with {\"userId\":9999,\"date\":\"notadate\",\"products\":[{\"productId\":99999,\"quantity\":-2}]} -> 201",
+    "POST /products with {} / price \"abc\" / price -10 / image \"not a url\" -> 201; PUT /products/1 price \"abc\" -> 200",
+    "POST /carts with {} / userId \"abc\" / products \"x\" / quantity 0 -> 201; PUT /carts/1 quantity -5 -> 200",
+    "POST /users with {} / email \"not-an-email\" / no password -> 201; PUT /users/2 email \"bad\" -> 200"
+  ],
+  "request": {
+    "curl": "curl -s -i -X POST 'https://fakestoreapi.com/carts' -H 'Content-Type: application/json' -d '{\"userId\":9999,\"date\":\"notadate\",\"products\":[{\"productId\":99999,\"quantity\":-2}]}'"
+  },
+  "expected": "400 with a field-level message (spec types: price number, image uri, userId integer, products array; plus existing user/product, quantity >= 1, valid email, password required).",
+  "actual": "201/200 and the invalid values are echoed back.",
+  "response": {
+    "status": 201,
+    "time_ms": 912,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac81dcfffe08-SIN"
+    },
+    "body": "{\"id\":11,\"userId\":9999,\"date\":\"notadate\",\"products\":[{\"productId\":99999,\"quantity\":-2}]}"
+  },
+  "affected_endpoints": [
+    "POST/PUT /products",
+    "POST/PUT /carts",
+    "POST/PUT /users"
+  ],
+  "notes": ""
+}

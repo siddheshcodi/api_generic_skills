@@ -1,0 +1,44 @@
+{
+  "bug_id": "BUG-007",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "POST /users accepts a username that already exists",
+  "description": "A new account can be created with exactly the same username as an existing customer. Usernames are used to log in, so two accounts with the same name means the wrong person could end up logged in. The system should say 'username already taken'.",
+  "severity": "Medium",
+  "priority": "P3",
+  "method": "POST",
+  "endpoint": "/users",
+  "test_case_id": "FS-USERS-014",
+  "test_case_ids": [
+    "FS-USERS-014"
+  ],
+  "category": "Input validation - uniqueness",
+  "preconditions": "User 'mor_2314' exists (GET /users/2)",
+  "steps": [
+    "Send POST /users with {\"username\":\"mor_2314\",\"email\":\"mor_2314@example.com\",\"password\":\"<PASSWORD>\"}",
+    "Observe 201 - account created with a duplicate username"
+  ],
+  "request": {
+    "curl": "curl -s -i -X POST 'https://fakestoreapi.com/users' -H 'Content-Type: application/json' -d '{\"username\":\"mor_2314\",\"email\":\"mor_2314@example.com\",\"password\":\"<PASSWORD>\"}'"
+  },
+  "expected": "409 Conflict (or 400) 'username already exists'.",
+  "actual": "201 Created.",
+  "response": {
+    "status": 201,
+    "time_ms": 677,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac859c2b8523-HKG"
+    },
+    "body": "{\"id\":11}"
+  },
+  "affected_endpoints": [
+    "POST /users",
+    "PUT /users/{id}"
+  ],
+  "notes": ""
+}

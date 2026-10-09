@@ -1,0 +1,45 @@
+{
+  "bug_id": "BUG-010",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "Error responses are plain text or HTML pages instead of JSON",
+  "description": "When something goes wrong at login (wrong password, missing fields) or the request is badly formed, the system answers with plain text or a web page instead of the structured format it uses everywhere else. Apps can't read these errors reliably and may crash or show raw HTML to the user.",
+  "severity": "Low",
+  "priority": "P3",
+  "method": "POST",
+  "endpoint": "/auth/login",
+  "test_case_id": "FS-AUTH-010",
+  "test_case_ids": [
+    "FS-AUTH-010",
+    "FS-PRODUCTS-017"
+  ],
+  "category": "Contract - error format",
+  "preconditions": "None",
+  "steps": [
+    "Send POST /auth/login with a wrong password -> 401, Content-Type text/html, body 'username or password is incorrect'",
+    "Send POST /products with body '{bad json' -> 400 with a full HTML error page"
+  ],
+  "request": {
+    "curl": "curl -s -i -X POST 'https://fakestoreapi.com/auth/login' -H 'Content-Type: application/json' -d '{\"username\":\"mor_2314\",\"password\":\"wrong-password\"}'"
+  },
+  "expected": "JSON error body like the other endpoints: {\"status\":\"error\",\"message\":\"...\"}.",
+  "actual": "text/html plain-text or HTML page bodies.",
+  "response": {
+    "status": 401,
+    "time_ms": 665,
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac94ed629b81-HKG"
+    },
+    "body": "username or password is incorrect"
+  },
+  "affected_endpoints": [
+    "POST /auth/login",
+    "any endpoint with malformed JSON"
+  ],
+  "notes": ""
+}

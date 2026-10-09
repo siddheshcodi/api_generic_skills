@@ -1,0 +1,349 @@
+{
+  "source_type": "openapi3",
+  "title": "FakeStoreAPI",
+  "version": "old-version-production",
+  "servers": [
+    "https://fakestoreapi.com"
+  ],
+  "security_schemes": {},
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/products",
+      "summary": "Get all products",
+      "tags": [
+        "Products"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Product[]",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/products",
+      "summary": "Add a new product",
+      "tags": [
+        "Products"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "Product",
+      "body_fields": "(required) id:integer, title:string, price:number, description:string, category:string, image:string",
+      "responses": {
+        "201": "Product",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/products/{id}",
+      "summary": "Get a single product",
+      "tags": [
+        "Products"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Product",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/products/{id}",
+      "summary": "Update a product",
+      "tags": [
+        "Products"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "Product",
+      "body_fields": "(required) id:integer, title:string, price:number, description:string, category:string, image:string",
+      "responses": {
+        "200": "Product",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/products/{id}",
+      "summary": "Delete a product",
+      "tags": [
+        "Products"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Product deleted successfully",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/carts",
+      "summary": "Get all carts",
+      "tags": [
+        "Carts"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Cart[]",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/carts",
+      "summary": "Add a new cart",
+      "tags": [
+        "Carts"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "Cart",
+      "body_fields": "(required) id:integer, userId:integer, products:array",
+      "responses": {
+        "201": "Cart",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/carts/{id}",
+      "summary": "Get a single cart",
+      "tags": [
+        "Carts"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Cart",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/carts/{id}",
+      "summary": "Update a cart",
+      "tags": [
+        "Carts"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "Cart",
+      "body_fields": "(required) id:integer, userId:integer, products:array",
+      "responses": {
+        "200": "Cart",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/carts/{id}",
+      "summary": "Delete a cart",
+      "tags": [
+        "Carts"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "Cart deleted successfully",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/users",
+      "summary": "Get all users",
+      "tags": [
+        "Users"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "User[]",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/users",
+      "summary": "Add a new user",
+      "tags": [
+        "Users"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "User",
+      "body_fields": "(required) id:integer, username:string, email:string, password:string",
+      "responses": {
+        "201": "User",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/users/{id}",
+      "summary": "Get a single user",
+      "tags": [
+        "Users"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "User",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/users/{id}",
+      "summary": "Update a user",
+      "tags": [
+        "Users"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "User",
+      "body_fields": "(required) id:integer, username:string, email:string, password:string",
+      "responses": {
+        "200": "User",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/users/{id}",
+      "summary": "Delete a user",
+      "tags": [
+        "Users"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [
+        "id*"
+      ],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "",
+      "body_schema": "",
+      "body_fields": "",
+      "responses": {
+        "200": "User deleted successfully",
+        "400": "Bad request"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "summary": "Login",
+      "tags": [
+        "Auth"
+      ],
+      "deprecated": false,
+      "auth": "unspecified",
+      "path_params": [],
+      "query_params": [],
+      "header_params": [],
+      "content_type": "application/json",
+      "body_schema": "Login",
+      "body_fields": "(required) username:string, password:string",
+      "responses": {
+        "200": "LoginResponse",
+        "400": "Bad request"
+      }
+    }
+  ]
+}

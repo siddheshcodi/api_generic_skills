@@ -1,6 +1,6 @@
 {
   "bug_id": "BUG-003",
-  "status": "draft",
+  "status": "created",
   "environment": "public",
   "base_url": "https://fakestoreapi.com",
   "reproducibility": "3/3",
@@ -32,5 +32,11 @@
       "cf-ray": "a47bf93f9c96108d-HKG"
     },
     "body": "{\"id\":1,\"userId\":1,\"date\":\"2020-03-02T00:00:00.000Z\",\"products\":[{\"productId\":1,\"quantity\":4}],\"__v\":0}"
+  },
+  "tracker": {
+    "type": "manual",
+    "id": "BUG-003",
+    "key": "BUG-003",
+    "url": "C:\\Users\\siddhesh.kasar_codit\\Desktop\\demo_api_test\\bug-reports\\BUG-003.md"
   }
 }

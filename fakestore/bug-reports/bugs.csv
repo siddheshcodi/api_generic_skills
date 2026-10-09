@@ -1,0 +1,49 @@
+﻿bug_id,module,severity,priority,title,endpoint,test_case,root_cause,file
+BUG-PRODUCTS-01,Products,High,P1,Anyone can delete a product without logging in,DELETE /products/{id},FS-PRODUCTS-027,BUG-002,Products/BUG-PRODUCTS-01.md
+BUG-PRODUCTS-02,Products,Medium,P2,Get product 9999 returns 200 with an empty body instead of 404,GET /products/{id},FS-PRODUCTS-007,BUG-005,Products/BUG-PRODUCTS-02.md
+BUG-PRODUCTS-03,Products,Medium,P2,Get product -1 returns 200 with an empty body,GET /products/{id},FS-PRODUCTS-008,BUG-005,Products/BUG-PRODUCTS-03.md
+BUG-PRODUCTS-04,Products,Medium,P2,Get product 0 returns 200 with an empty body,GET /products/{id},FS-PRODUCTS-008,BUG-005,Products/BUG-PRODUCTS-04.md
+BUG-PRODUCTS-05,Products,Medium,P2,Get product '1.5' returns 200 empty instead of 400,GET /products/{id},FS-PRODUCTS-009,BUG-005,Products/BUG-PRODUCTS-05.md
+BUG-PRODUCTS-06,Products,Medium,P2,Get product 'abc' returns 200 empty instead of 400,GET /products/{id},FS-PRODUCTS-009,BUG-005,Products/BUG-PRODUCTS-06.md
+BUG-PRODUCTS-07,Products,Medium,P2,Create product accepted with an empty body,POST /products,FS-PRODUCTS-014,BUG-006,Products/BUG-PRODUCTS-07.md
+BUG-PRODUCTS-08,Products,Medium,P2,Create product accepts an image that is not a URL,POST /products,FS-PRODUCTS-015,BUG-006,Products/BUG-PRODUCTS-08.md
+BUG-PRODUCTS-09,Products,Medium,P2,Create product accepts a negative price,POST /products,FS-PRODUCTS-015,BUG-006,Products/BUG-PRODUCTS-09.md
+BUG-PRODUCTS-10,Products,Medium,P2,Create product accepts text as price,POST /products,FS-PRODUCTS-015,BUG-006,Products/BUG-PRODUCTS-10.md
+BUG-PRODUCTS-11,Products,Medium,P2,Update product 9999 returns 200 with a made-up product,PUT /products/{id},FS-PRODUCTS-020,BUG-005,Products/BUG-PRODUCTS-11.md
+BUG-PRODUCTS-12,Products,Medium,P2,Update product accepts text as price,PUT /products/{id},FS-PRODUCTS-022,BUG-006,Products/BUG-PRODUCTS-12.md
+BUG-PRODUCTS-13,Products,Medium,P2,Delete product 9999 returns 200 with an empty body,DELETE /products/{id},FS-PRODUCTS-025,BUG-005,Products/BUG-PRODUCTS-13.md
+BUG-PRODUCTS-14,Products,Low,P3,Malformed JSON returns an HTML error page instead of JSON,POST /products,FS-PRODUCTS-017,BUG-010,Products/BUG-PRODUCTS-14.md
+BUG-PRODUCTS-15,Products,Low,P4,Responses reveal the server framework (X-Powered-By: Express),GET /products/{id},FS-PRODUCTS-029,BUG-012,Products/BUG-PRODUCTS-15.md
+BUG-CARTS-01,Carts,High,P1,Anyone can create a cart for another user without logging in,POST /carts,FS-CARTS-019,BUG-002,Carts/BUG-CARTS-01.md
+BUG-CARTS-02,Carts,Medium,P3,"Cart items are {productId, quantity}, not Product objects as documented",GET /carts/{id},FS-CARTS-010,BUG-008,Carts/BUG-CARTS-02.md
+BUG-CARTS-03,Carts,Medium,P2,Get cart 9999 returns 200 'null' instead of 404,GET /carts/{id},FS-CARTS-011,BUG-005,Carts/BUG-CARTS-03.md
+BUG-CARTS-04,Carts,Medium,P2,Create cart accepted with an empty body,POST /carts,FS-CARTS-014,BUG-006,Carts/BUG-CARTS-04.md
+BUG-CARTS-05,Carts,Medium,P2,Create cart accepts an invalid date,POST /carts,FS-CARTS-015,BUG-006,Carts/BUG-CARTS-05.md
+BUG-CARTS-06,Carts,Medium,P2,Create cart accepts products that is not a list,POST /carts,FS-CARTS-015,BUG-006,Carts/BUG-CARTS-06.md
+BUG-CARTS-07,Carts,Medium,P2,Create cart accepts text as userId,POST /carts,FS-CARTS-015,BUG-006,Carts/BUG-CARTS-07.md
+BUG-CARTS-08,Carts,Medium,P2,Create cart accepted for a user that does not exist,POST /carts,FS-CARTS-016,BUG-006,Carts/BUG-CARTS-08.md
+BUG-CARTS-09,Carts,Medium,P2,Create cart accepted with a product that does not exist,POST /carts,FS-CARTS-017,BUG-006,Carts/BUG-CARTS-09.md
+BUG-CARTS-10,Carts,Medium,P2,Create cart accepts a negative quantity,POST /carts,FS-CARTS-018,BUG-006,Carts/BUG-CARTS-10.md
+BUG-CARTS-11,Carts,Medium,P2,Create cart accepts quantity 0,POST /carts,FS-CARTS-018,BUG-006,Carts/BUG-CARTS-11.md
+BUG-CARTS-12,Carts,Medium,P2,Update cart 9999 returns 200 with a made-up cart,PUT /carts/{id},FS-CARTS-022,BUG-005,Carts/BUG-CARTS-12.md
+BUG-CARTS-13,Carts,Medium,P2,Update cart accepts a negative quantity,PUT /carts/{id},FS-CARTS-024,BUG-006,Carts/BUG-CARTS-13.md
+BUG-CARTS-14,Carts,Medium,P2,Delete cart 9999 returns 200 'null' instead of 404,DELETE /carts/{id},FS-CARTS-026,BUG-005,Carts/BUG-CARTS-14.md
+BUG-USERS-01,Users,Critical,P1,User list returns every user's password without login,GET /users,FS-USERS-003,BUG-001,Users/BUG-USERS-01.md
+BUG-USERS-02,Users,Critical,P1,Single user returns the password without login,GET /users/{id},FS-USERS-007,BUG-001,Users/BUG-USERS-02.md
+BUG-USERS-03,Users,Critical,P1,Delete user response returns the password,DELETE /users/{id},FS-USERS-021,BUG-001,Users/BUG-USERS-03.md
+BUG-USERS-04,Users,High,P1,Anyone can delete a user account without logging in,DELETE /users/{id},FS-USERS-024,BUG-002,Users/BUG-USERS-04.md
+BUG-USERS-05,Users,Medium,P2,Get user 9999 returns 200 'null' instead of 404,GET /users/{id},FS-USERS-005,BUG-005,Users/BUG-USERS-05.md
+BUG-USERS-06,Users,Medium,P3,"Create user response returns only an id, not the user",POST /users,FS-USERS-009,BUG-009,Users/BUG-USERS-06.md
+BUG-USERS-07,Users,Medium,P2,New users are often given the id of an existing user (id 1),POST /users,FS-USERS-010,BUG-004,Users/BUG-USERS-07.md
+BUG-USERS-08,Users,Medium,P2,Create user accepted with an empty body,POST /users,FS-USERS-011,BUG-006,Users/BUG-USERS-08.md
+BUG-USERS-09,Users,Medium,P2,Create user accepts an invalid email,POST /users,FS-USERS-012,BUG-006,Users/BUG-USERS-09.md
+BUG-USERS-10,Users,Medium,P2,Create user accepted without a password,POST /users,FS-USERS-013,BUG-006,Users/BUG-USERS-10.md
+BUG-USERS-11,Users,Medium,P3,Create user accepts an existing username,POST /users,FS-USERS-014,BUG-007,Users/BUG-USERS-11.md
+BUG-USERS-12,Users,Medium,P3,PATCH user response has no user id,"PUT, PATCH /users/{id}",FS-USERS-016,BUG-009,Users/BUG-USERS-12.md
+BUG-USERS-13,Users,Medium,P3,PUT user response has no user id,"PUT, PATCH /users/{id}",FS-USERS-016,BUG-009,Users/BUG-USERS-13.md
+BUG-USERS-14,Users,Medium,P2,Update user 9999 returns 200 instead of 404,PUT /users/{id},FS-USERS-017,BUG-005,Users/BUG-USERS-14.md
+BUG-USERS-15,Users,Medium,P2,Update user accepts an invalid email,PUT /users/{id},FS-USERS-019,BUG-006,Users/BUG-USERS-15.md
+BUG-USERS-16,Users,Medium,P2,Delete user 9999 returns 200 'null' instead of 404,DELETE /users/{id},FS-USERS-022,BUG-005,Users/BUG-USERS-16.md
+BUG-AUTH-01,Auth,High,P2,Login token never expires (no 'exp' claim),POST /auth/login,FS-AUTH-003,BUG-003,Auth/BUG-AUTH-01.md
+BUG-AUTH-02,Auth,Low,P4,Login returns 201 instead of the documented 200,POST /auth/login,FS-AUTH-001,BUG-011,Auth/BUG-AUTH-02.md
+BUG-AUTH-03,Auth,Low,P3,"Login errors are plain text, not JSON",POST /auth/login,FS-AUTH-010,BUG-010,Auth/BUG-AUTH-03.md

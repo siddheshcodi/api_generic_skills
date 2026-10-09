@@ -1,6 +1,6 @@
 {
   "bug_id": "BUG-002",
-  "status": "draft",
+  "status": "created",
   "environment": "public",
   "base_url": "https://fakestoreapi.com",
   "reproducibility": "3/3",
@@ -57,5 +57,11 @@
     "GET /users/9999 -> 200 'null'",
     "PUT /users/9999 -> 200, echoes the sent fields",
     "DELETE /users/9999 -> 200 'null'"
-  ]
+  ],
+  "tracker": {
+    "type": "manual",
+    "id": "BUG-002",
+    "key": "BUG-002",
+    "url": "C:\\Users\\siddhesh.kasar_codit\\Desktop\\demo_api_test\\bug-reports\\BUG-002.md"
+  }
 }

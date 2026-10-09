@@ -1,0 +1,43 @@
+{
+  "bug_id": "BUG-012",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "Responses reveal the server framework (X-Powered-By: Express)",
+  "description": "Every reply tells the world which software the server runs on. This doesn't break anything, but it helps attackers pick known weaknesses for that software. The header should be switched off.",
+  "severity": "Low",
+  "priority": "P4",
+  "method": "GET",
+  "endpoint": "/products/{id}",
+  "test_case_id": "FS-PRODUCTS-029",
+  "test_case_ids": [
+    "FS-PRODUCTS-029"
+  ],
+  "category": "Security - information disclosure",
+  "preconditions": "None",
+  "steps": [
+    "Send GET https://fakestoreapi.com/products/1 and look at the response headers",
+    "Header 'X-Powered-By: Express' is present"
+  ],
+  "request": {
+    "curl": "curl -s -i -X GET 'https://fakestoreapi.com/products/1'"
+  },
+  "expected": "No X-Powered-By header (e.g. app.disable('x-powered-by') in Express).",
+  "actual": "X-Powered-By: Express on every response.",
+  "response": {
+    "status": 200,
+    "time_ms": 1592,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac9dffcaf5cc-NRT"
+    },
+    "body": "{\"id\":1,\"title\":\"Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops\",\"price\":109.95,\"description\":\"Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday\",\"category\":\"men's clothing\",\"image\":\"https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png\",\"rating\":{\"rate\":3.9,\"count\":120}}"
+  },
+  "affected_endpoints": [
+    "all endpoints"
+  ],
+  "notes": ""
+}

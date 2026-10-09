@@ -1,0 +1,47 @@
+{
+  "bug_id": "BUG-009",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "POST, PUT and PATCH /users do not return the user record",
+  "description": "After creating or changing a customer account, the system's reply doesn't contain the account: a new account comes back with only a number, and an update comes back without the account number at all. Apps can't confirm what was saved or which account was changed. The reply should contain the full account (without the password).",
+  "severity": "Medium",
+  "priority": "P3",
+  "method": "PUT",
+  "endpoint": "/users/{id}",
+  "test_case_id": "FS-USERS-009",
+  "test_case_ids": [
+    "FS-USERS-009",
+    "FS-USERS-016"
+  ],
+  "category": "Contract - response body",
+  "preconditions": "None",
+  "steps": [
+    "Send PUT /users/2 with {\"username\":\"qa_auto_user\"} -> 200 {\"username\":\"qa_auto_user\"} (no id)",
+    "PATCH /users/2 -> same",
+    "POST /users with username/email/password -> 201 {\"id\":11} only"
+  ],
+  "request": {
+    "curl": "curl -s -i -X PUT 'https://fakestoreapi.com/users/2' -H 'Content-Type: application/json' -d '{\"username\":\"qa_auto_user\"}'"
+  },
+  "expected": "Spec: 201/200 return the User object (id, username, email, ...).",
+  "actual": "POST returns only {id}; PUT/PATCH return only the sent fields, without id.",
+  "response": {
+    "status": 200,
+    "time_ms": 975,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac8e98d03f52-SIN"
+    },
+    "body": "{\"username\":\"qa_auto_user\"}"
+  },
+  "affected_endpoints": [
+    "POST /users",
+    "PUT /users/{id}",
+    "PATCH /users/{id}"
+  ],
+  "notes": "Products and carts include the id in their update responses; users do not."
+}

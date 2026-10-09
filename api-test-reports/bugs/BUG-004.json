@@ -1,6 +1,6 @@
 {
   "bug_id": "BUG-004",
-  "status": "draft",
+  "status": "created",
   "environment": "public",
   "base_url": "https://fakestoreapi.com",
   "reproducibility": "3/3",
@@ -48,5 +48,11 @@
     "POST /carts (empty body, userId as text, products not a list)",
     "POST /users (empty body, invalid email, missing password)"
   ],
-  "notes": "Negative price (-5) is also accepted - spec has no min, raised as an open question."
+  "notes": "Negative price (-5) is also accepted - spec has no min, raised as an open question.",
+  "tracker": {
+    "type": "manual",
+    "id": "BUG-004",
+    "key": "BUG-004",
+    "url": "C:\\Users\\siddhesh.kasar_codit\\Desktop\\demo_api_test\\bug-reports\\BUG-004.md"
+  }
 }

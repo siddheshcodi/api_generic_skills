@@ -48,4 +48,4 @@ bug_tracker:
 
 manual:
   tool_name: "any bug tracker"
-  output_dir: ""                   # default: api-test-reports/bugs/export
+  output_dir: "bug-reports"        # readable bug reports + summary, open in VS Code

@@ -105,12 +105,12 @@ Customer accounts: list, read, create, update, delete. Includes sensitive-data c
 |---|---|---|---|---|---|---|
 | FS-USERS-003 | User list must not expose passwords | `GET /users` | no 'password' field in any user | ❌ Fail | GET /users returns a password field for user ids [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] (no auth needed) | BUG-001 |
 | FS-USERS-004 | Get a user that does not exist | `GET /users/{id}` | 400/404, not 200 null | ❌ Fail | expected 400/404 for unknown id, got GET https://fakestoreapi.com/users/9999 -> 200: 'null' | BUG-002 |
-| FS-USERS-006 | Create a user with an invalid email | `POST /users` | 400 | ❌ Fail | expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{"id":1}' | BUG-004 |
+| FS-USERS-006 | Create a user with an invalid email | `POST /users` | 400 | ❌ Fail | expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{"id":11}' | BUG-004 |
 | FS-USERS-009 | Single-user responses must not expose password | `GET, DELETE /users/{id}` | no 'password' field in the response | ❌ Fail | GET /users/1 response contains a password field | BUG-001 |
 | FS-USERS-010 | Get a user with a non-numeric id | `GET /users/{id}` | 400 | ✅ Pass |  |  |
-| FS-USERS-011 | Update a user that does not exist | `PUT /users/{id}` | 400/404 | ❌ Fail | expected 400/404 for unknown id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{"username":"qa_auto_ecb01b4e"}' | BUG-002 |
+| FS-USERS-011 | Update a user that does not exist | `PUT /users/{id}` | 400/404 | ❌ Fail | expected 400/404 for unknown id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{"username":"qa_auto_2931c1fe"}' | BUG-002 |
 | FS-USERS-012 | Delete a user that does not exist | `DELETE /users/{id}` | 400/404 | ❌ Fail | expected 400/404 for unknown id, got DELETE https://fakestoreapi.com/users/9999 -> 200: 'null' | BUG-002 |
-| FS-USERS-013 | Create a user with an empty body | `POST /users` | 400 | ❌ Fail | expected 400 for empty body, got POST https://fakestoreapi.com/users -> 201: '{"id":11}' | BUG-004 |
+| FS-USERS-013 | Create a user with an empty body | `POST /users` | 400 | ❌ Fail | expected 400 for empty body, got POST https://fakestoreapi.com/users -> 201: '{"id":1}' | BUG-004 |
 | FS-USERS-014 | Create a user without a password | `POST /users` | 400 | ❌ Fail | expected 400 when password is missing, got POST https://fakestoreapi.com/users -> 201: '{"id":1}' | BUG-004 |
 
 ### Auth — 7/8 passed

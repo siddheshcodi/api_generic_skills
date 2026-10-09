@@ -1,0 +1,49 @@
+{
+  "bug_id": "BUG-001",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "GET /users, GET /users/{id} and DELETE /users/{id} return every user's password in plain text",
+  "description": "Anyone on the internet, without logging in, can open the user list and read every customer's password in plain text - and those passwords really work to log in. Passwords should never be sent back by the system. With them, a stranger can take over any customer account.",
+  "severity": "Critical",
+  "priority": "P1",
+  "method": "GET",
+  "endpoint": "/users",
+  "test_case_id": "FS-USERS-003",
+  "test_case_ids": [
+    "FS-USERS-003",
+    "FS-USERS-007",
+    "FS-USERS-021"
+  ],
+  "category": "Security - sensitive data exposure",
+  "preconditions": "None - no token or login needed",
+  "steps": [
+    "Send GET https://fakestoreapi.com/users with no Authorization header",
+    "Every user object contains 'password' in plain text (all 10 users)",
+    "GET /users/1 and DELETE /users/1 also return the password",
+    "POST /auth/login with any leaked username + password returns a token (verified for 3 users)"
+  ],
+  "request": {
+    "curl": "curl -s -i -X GET 'https://fakestoreapi.com/users/1'"
+  },
+  "expected": "User responses never contain passwords (plain or hashed); user data requires authentication.",
+  "actual": "200 OK without any token; 'password' returned in plain text for every user, and the passwords are valid for login.",
+  "response": {
+    "status": 200,
+    "time_ms": 678,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac657cc38511-HKG"
+    },
+    "body": "{\"address\":{\"geolocation\":{\"lat\":\"-37.3159\",\"long\":\"81.1496\"},\"city\":\"kilcoole\",\"street\":\"new road\",\"number\":7682,\"zipcode\":\"12926-3874\"},\"id\":1,\"email\":\"john@gmail.com\",\"username\":\"johnd\",\"password\":\"<MASKED>\",\"name\":{\"firstname\":\"john\",\"lastname\":\"doe\"},\"phone\":\"1-570-236-7033\",\"__v\":0}"
+  },
+  "affected_endpoints": [
+    "GET /users",
+    "GET /users/{id}",
+    "DELETE /users/{id}"
+  ],
+  "notes": "The OpenAPI User schema itself lists 'password' as a response field - the spec should be fixed too."
+}

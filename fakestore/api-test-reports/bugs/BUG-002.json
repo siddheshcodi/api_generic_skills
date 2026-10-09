@@ -1,0 +1,48 @@
+{
+  "bug_id": "BUG-002",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "Products, carts and users can be created, changed and deleted without logging in",
+  "description": "Anyone, without logging in, can delete products, delete customer accounts, or create shopping carts in another customer's name. Changing data should only be allowed for logged-in people who own the data or are administrators. Right now any visitor or script could wipe or tamper with the store.",
+  "severity": "High",
+  "priority": "P1",
+  "method": "DELETE",
+  "endpoint": "/users/{id}",
+  "test_case_id": "FS-PRODUCTS-027",
+  "test_case_ids": [
+    "FS-PRODUCTS-027",
+    "FS-CARTS-019",
+    "FS-USERS-024"
+  ],
+  "category": "Security - missing authentication",
+  "preconditions": "None - no token",
+  "steps": [
+    "Send DELETE https://fakestoreapi.com/users/1 with no Authorization header -> 200 with the deleted user",
+    "DELETE /products/1 with no token -> 200",
+    "POST /carts with {\"userId\":1,...} and no token -> 201 (cart created for user 1)"
+  ],
+  "request": {
+    "curl": "curl -s -i -X DELETE 'https://fakestoreapi.com/users/1'"
+  },
+  "expected": "401 Unauthorized without a valid token; 403 when the user does not own the data.",
+  "actual": "200/201 for every write without any token.",
+  "response": {
+    "status": 200,
+    "time_ms": 616,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac695c5185a0-HKG"
+    },
+    "body": "{\"address\":{\"geolocation\":{\"lat\":\"-37.3159\",\"long\":\"81.1496\"},\"city\":\"kilcoole\",\"street\":\"new road\",\"number\":7682,\"zipcode\":\"12926-3874\"},\"id\":1,\"email\":\"john@gmail.com\",\"username\":\"johnd\",\"password\":\"<MASKED>\",\"name\":{\"firstname\":\"john\",\"lastname\":\"doe\"},\"phone\":\"1-570-236-7033\",\"__v\":0}"
+  },
+  "affected_endpoints": [
+    "POST/PUT/PATCH/DELETE /products",
+    "POST/PUT/PATCH/DELETE /carts",
+    "POST/PUT/PATCH/DELETE /users"
+  ],
+  "notes": "The spec defines no security scheme; reported as a security issue per the test guidelines. Writes are not persisted on this demo API."
+}

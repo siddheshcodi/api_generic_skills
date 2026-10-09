@@ -1,0 +1,44 @@
+{
+  "bug_id": "BUG-003",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "POST /auth/login issues tokens that never expire",
+  "description": "The login key the system hands out after signing in never runs out. If someone steals it (from a shared computer, a log file or a browser), they can use it forever. Login keys should expire after a set time, for example one hour.",
+  "severity": "High",
+  "priority": "P2",
+  "method": "POST",
+  "endpoint": "/auth/login",
+  "test_case_id": "FS-AUTH-003",
+  "test_case_ids": [
+    "FS-AUTH-003"
+  ],
+  "category": "Security - token handling",
+  "preconditions": "Valid user credentials (public demo user)",
+  "steps": [
+    "Send POST /auth/login with valid credentials",
+    "Decode the middle part of the returned JWT (base64)",
+    "The claims are only {\"sub\":2,\"user\":\"mor_2314\",\"iat\":...} - there is no 'exp'"
+  ],
+  "request": {
+    "curl": "curl -s -i -X POST 'https://fakestoreapi.com/auth/login' -H 'Content-Type: application/json' -d '{\"username\":\"mor_2314\",\"password\":\"<PASSWORD>\"}'"
+  },
+  "expected": "The token contains an 'exp' (expiry) claim, e.g. 1 hour after 'iat'.",
+  "actual": "Token claims: sub, user, iat. No 'exp' - the token is valid forever.",
+  "response": {
+    "status": 201,
+    "time_ms": 722,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac6d89448500-HKG"
+    },
+    "body": "{\"token\":\"<JWT>\"}"
+  },
+  "affected_endpoints": [
+    "POST /auth/login"
+  ],
+  "notes": ""
+}

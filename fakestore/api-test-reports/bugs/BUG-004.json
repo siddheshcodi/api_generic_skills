@@ -1,0 +1,44 @@
+{
+  "bug_id": "BUG-004",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3 runs (8/20 single creates)",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "POST /users gives a new user the id of an existing user (id 1) in about 40% of calls",
+  "description": "When a new customer signs up, the system often gives them the same customer number as an existing customer (number 1). Two people with the same number means one could see or change the other's orders and data. Every new account must get its own unique number.",
+  "severity": "Medium",
+  "priority": "P2",
+  "method": "POST",
+  "endpoint": "/users",
+  "test_case_id": "FS-USERS-010",
+  "test_case_ids": [
+    "FS-USERS-010"
+  ],
+  "category": "Data integrity - id collision",
+  "preconditions": "None",
+  "steps": [
+    "Send POST /users with a new username, email and password 20 times",
+    "Collect the returned ids: they alternate between 11 and 1",
+    "id 1 already belongs to user 'johnd' (GET /users/1)"
+  ],
+  "request": {
+    "curl": "curl -s -i -X POST 'https://fakestoreapi.com/users' -H 'Content-Type: application/json' -d '{\"username\":\"qa_auto_newuser\",\"email\":\"qa_auto_newuser@example.com\",\"password\":\"<PASSWORD>\"}'"
+  },
+  "expected": "Every new user gets a new id that no existing user has (e.g. 11, 12, ...).",
+  "actual": "8 of 20 creates returned id 1 (existing user johnd); the rest returned 11.",
+  "response": {
+    "status": 201,
+    "time_ms": 810,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac72b865e353-NRT"
+    },
+    "body": "{\"id\":1}"
+  },
+  "affected_endpoints": [
+    "POST /users"
+  ],
+  "notes": "Intermittent: likely two server instances with different id logic behind the load balancer."
+}

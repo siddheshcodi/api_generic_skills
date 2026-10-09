@@ -1,0 +1,25 @@
+﻿bug_id,module,severity,priority,title,endpoint,test_case,root_cause,file
+BUG-PRODUCTS-01,Products,Medium,P2,Get a product that does not exist,GET /products/{id},FS-PRODUCTS-005,BUG-002,Products/BUG-PRODUCTS-01.md
+BUG-PRODUCTS-02,Products,Medium,P2,Get a product with a non-numeric id,GET /products/{id},FS-PRODUCTS-006,BUG-002,Products/BUG-PRODUCTS-02.md
+BUG-PRODUCTS-03,Products,Medium,P3,Create a product with an empty body,POST /products,FS-PRODUCTS-008,BUG-004,Products/BUG-PRODUCTS-03.md
+BUG-PRODUCTS-04,Products,Medium,P2,Update a product that does not exist,PUT /products/{id},FS-PRODUCTS-011,BUG-002,Products/BUG-PRODUCTS-04.md
+BUG-PRODUCTS-05,Products,Medium,P2,Delete a product that does not exist,DELETE /products/{id},FS-PRODUCTS-013,BUG-002,Products/BUG-PRODUCTS-05.md
+BUG-PRODUCTS-06,Products,Medium,P3,Create a product with text as price,POST /products,FS-PRODUCTS-014,BUG-004,Products/BUG-PRODUCTS-06.md
+BUG-PRODUCTS-07,Products,Medium,P3,Create a product with a non-JSON body,POST /products,FS-PRODUCTS-018,BUG-004,Products/BUG-PRODUCTS-07.md
+BUG-CARTS-01,Carts,Medium,P3,Get a single cart matching the documented schema,GET /carts/{id},FS-CARTS-002,BUG-003,Carts/BUG-CARTS-01.md
+BUG-CARTS-02,Carts,Medium,P2,Get a cart that does not exist,GET /carts/{id},FS-CARTS-003,BUG-002,Carts/BUG-CARTS-02.md
+BUG-CARTS-03,Carts,Medium,P3,Create a cart with an empty body,POST /carts,FS-CARTS-007,BUG-004,Carts/BUG-CARTS-03.md
+BUG-CARTS-04,Carts,Medium,P2,Update a cart that does not exist,PUT /carts/{id},FS-CARTS-009,BUG-002,Carts/BUG-CARTS-04.md
+BUG-CARTS-05,Carts,Medium,P2,Delete a cart that does not exist,DELETE /carts/{id},FS-CARTS-010,BUG-002,Carts/BUG-CARTS-05.md
+BUG-CARTS-06,Carts,Medium,P3,Create a cart with text as userId,POST /carts,FS-CARTS-011,BUG-004,Carts/BUG-CARTS-06.md
+BUG-CARTS-07,Carts,Medium,P3,Create a cart where products is not a list,POST /carts,FS-CARTS-012,BUG-004,Carts/BUG-CARTS-07.md
+BUG-USERS-01,Users,Critical,P1,User list must not expose passwords,GET /users,FS-USERS-003,BUG-001,Users/BUG-USERS-01.md
+BUG-USERS-02,Users,Critical,P1,Single-user responses must not expose password (DELETE),DELETE /users/{id},FS-USERS-009,BUG-001,Users/BUG-USERS-02.md
+BUG-USERS-03,Users,Critical,P1,Single-user responses must not expose password (GET),GET /users/{id},FS-USERS-009,BUG-001,Users/BUG-USERS-03.md
+BUG-USERS-04,Users,Medium,P2,Get a user that does not exist,GET /users/{id},FS-USERS-004,BUG-002,Users/BUG-USERS-04.md
+BUG-USERS-05,Users,Medium,P3,Create a user with an invalid email,POST /users,FS-USERS-006,BUG-004,Users/BUG-USERS-05.md
+BUG-USERS-06,Users,Medium,P2,Update a user that does not exist,PUT /users/{id},FS-USERS-011,BUG-002,Users/BUG-USERS-06.md
+BUG-USERS-07,Users,Medium,P2,Delete a user that does not exist,DELETE /users/{id},FS-USERS-012,BUG-002,Users/BUG-USERS-07.md
+BUG-USERS-08,Users,Medium,P3,Create a user with an empty body,POST /users,FS-USERS-013,BUG-004,Users/BUG-USERS-08.md
+BUG-USERS-09,Users,Medium,P3,Create a user without a password,POST /users,FS-USERS-014,BUG-004,Users/BUG-USERS-09.md
+BUG-AUTH-01,Auth,Low,P4,Login with valid credentials,POST /auth/login,FS-AUTH-001,BUG-005,Auth/BUG-AUTH-01.md

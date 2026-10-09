@@ -1,0 +1,57 @@
+{
+  "bug_id": "BUG-005",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T10:24:00Z",
+  "title": "Unknown or invalid ids return 200 with an empty, null or made-up record instead of 400/404",
+  "description": "When you ask for, change or delete a product, cart or user that doesn't exist (or use letters instead of a number), the system answers 'OK, success' and sends back nothing - or even pretends to update item 9999. It should clearly say 'not found' or 'invalid number'. Apps relying on it show blank pages or think a change worked when it didn't.",
+  "severity": "Medium",
+  "priority": "P2",
+  "method": "GET",
+  "endpoint": "/products/{id}",
+  "test_case_id": "FS-PRODUCTS-007",
+  "test_case_ids": [
+    "FS-PRODUCTS-007",
+    "FS-PRODUCTS-008",
+    "FS-PRODUCTS-009",
+    "FS-PRODUCTS-020",
+    "FS-PRODUCTS-025",
+    "FS-CARTS-011",
+    "FS-CARTS-022",
+    "FS-CARTS-026",
+    "FS-USERS-005",
+    "FS-USERS-017",
+    "FS-USERS-022"
+  ],
+  "category": "Error handling",
+  "preconditions": "None",
+  "steps": [
+    "Send GET https://fakestoreapi.com/products/9999 -> 200 with an EMPTY body",
+    "GET /products/0, /products/-1, /products/abc, /products/1.5 -> 200 empty",
+    "GET/DELETE /carts/9999 and /users/9999 -> 200 'null'",
+    "PUT /products/9999, /carts/9999, /users/9999 -> 200 echoing a fake record"
+  ],
+  "request": {
+    "curl": "curl -s -i -X GET 'https://fakestoreapi.com/products/9999'"
+  },
+  "expected": "400 Bad request (as documented in the spec) or 404 Not Found with a JSON error message.",
+  "actual": "200 OK with an empty body, 'null', or the sent data echoed back as if item 9999 existed.",
+  "response": {
+    "status": 200,
+    "time_ms": 1300,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "x-powered-by": "Express",
+      "CF-RAY": "a47cac77bd9106fc-HKG"
+    },
+    "body": ""
+  },
+  "affected_endpoints": [
+    "GET/PUT/DELETE /products/{id}",
+    "GET/PUT/DELETE /carts/{id}",
+    "GET/PUT/DELETE /users/{id}"
+  ],
+  "notes": "Non-numeric ids are already rejected with 400 on DELETE /products, /carts/{id}, /users/{id} - GET /products/{id} is the odd one out."
+}

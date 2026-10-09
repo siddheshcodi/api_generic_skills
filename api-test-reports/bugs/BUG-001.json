@@ -1,6 +1,6 @@
 {
   "bug_id": "BUG-001",
-  "status": "draft",
+  "status": "created",
   "environment": "public",
   "base_url": "https://fakestoreapi.com",
   "reproducibility": "3/3",
@@ -43,5 +43,11 @@
     "GET /users/{id}",
     "DELETE /users/{id}"
   ],
-  "notes": "Public demo API with fake data, but the behaviour is a textbook credential exposure."
+  "notes": "Public demo API with fake data, but the behaviour is a textbook credential exposure.",
+  "tracker": {
+    "type": "manual",
+    "id": "BUG-001",
+    "key": "BUG-001",
+    "url": "C:\\Users\\siddhesh.kasar_codit\\Desktop\\demo_api_test\\bug-reports\\BUG-001.md"
+  }
 }

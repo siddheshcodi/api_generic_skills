@@ -34,14 +34,14 @@ FS-USERS-002,Users,GET /users/{id},positive,Happy path / contract,P0,Get a singl
 FS-USERS-003,Users,GET /users,negative,Security - sensitive data,P1,User list must not expose passwords,no auth,no 'password' field in any user,failed,"GET /users returns a password field for user ids [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] (no auth needed)",BUG-001
 FS-USERS-004,Users,GET /users/{id},negative,Error handling,P2,Get a user that does not exist,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown id, got GET https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-002
 FS-USERS-005,Users,POST /users,positive,Happy path,P1,Create a user with valid data,"username, email, password",201 with id,passed,,
-FS-USERS-006,Users,POST /users,negative,Validation / format,P1,Create a user with an invalid email,email: not-an-email,400,failed,"expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-004
+FS-USERS-006,Users,POST /users,negative,Validation / format,P1,Create a user with an invalid email,email: not-an-email,400,failed,"expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-004
 FS-USERS-007,Users,PUT /users/{id},positive,Happy path,P1,Update a user,"id=1, new username","200, username updated",passed,,
 FS-USERS-008,Users,DELETE /users/{id},positive,Happy path,P1,Delete a user,id=1,200,passed,,
 FS-USERS-009,Users,"GET, DELETE /users/{id}",negative,Security - sensitive data,P1,Single-user responses must not expose password,GET and DELETE /users/1,no 'password' field in the response,failed,GET /users/1 response contains a password field,BUG-001
 FS-USERS-010,Users,GET /users/{id},negative,Validation,P2,Get a user with a non-numeric id,id=abc,400,passed,,
-FS-USERS-011,Users,PUT /users/{id},negative,Error handling,P2,Update a user that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{""username"":""qa_auto_ecb01b4e""}'",BUG-002
+FS-USERS-011,Users,PUT /users/{id},negative,Error handling,P2,Update a user that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{""username"":""qa_auto_2931c1fe""}'",BUG-002
 FS-USERS-012,Users,DELETE /users/{id},negative,Error handling,P2,Delete a user that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got DELETE https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-002
-FS-USERS-013,Users,POST /users,negative,Validation,P1,Create a user with an empty body,{},400,failed,"expected 400 for empty body, got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-004
+FS-USERS-013,Users,POST /users,negative,Validation,P1,Create a user with an empty body,{},400,failed,"expected 400 for empty body, got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-004
 FS-USERS-014,Users,POST /users,negative,Validation,P1,Create a user without a password,username + email only,400,failed,"expected 400 when password is missing, got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-004
 FS-AUTH-001,Auth,POST /auth/login,positive,Happy path / contract,P0,Login with valid credentials,demo user (env FS_USER / FS_PASSWORD),200 + token (per spec),failed,"spec documents 200 LoginResponse, got 201",BUG-005
 FS-AUTH-002,Auth,POST /auth/login,negative,Auth,P0,Login with a wrong password,"valid user, wrong password",401,passed,,

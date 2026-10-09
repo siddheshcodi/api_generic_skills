@@ -1,0 +1,102 @@
+﻿id,module,endpoint,type,category,priority,title,request,expected,status,actual,bugs
+FS-PRODUCTS-001,Products,GET /products,positive,Happy path,P0,List all products,-,200; 20 products; Product schema,passed,,
+FS-PRODUCTS-002,Products,GET /products,positive,List,P2,Limit returns that many products,limit=5,products 1-5,passed,,
+FS-PRODUCTS-003,Products,GET /products,positive,List,P2,Sort orders products by id,sort=asc / sort=desc,ids in that order,passed,,
+FS-PRODUCTS-004,Products,GET /products,negative,Validation,P2,Invalid list params never break the list,limit=-1 / limit=abc / sort=sideways,no 5xx: 400 or the normal list,passed,,
+FS-PRODUCTS-005,Products,GET /products,positive,Performance,P2,List responds within sla,-,response within 2000 ms,passed,,
+FS-PRODUCTS-006,Products,GET /products/{id},positive,Happy path,P0,Get single product,id=1,200; Product schema,passed,,
+FS-PRODUCTS-007,Products,GET /products/{id},negative,Error handling,P1,Get nonexistent product returns 4xx,id=9999,"400/404, not an empty 200",failed,"expected 400/404 for unknown/invalid id, got GET https://fakestoreapi.com/products/9999 -> 200: ''",BUG-005
+FS-PRODUCTS-008,Products,GET /products/{id},negative,Validation,P2,Get product out of range id returns 4xx,id=0 / id=-1,"400/404, not an empty 200",failed,"expected 400/404 for unknown/invalid id, got GET https://fakestoreapi.com/products/0 -> 200: ''",BUG-005
+FS-PRODUCTS-009,Products,GET /products/{id},negative,Validation,P2,Get product non integer id returns 400,id=abc / id=1.5,400 (spec: id is integer),failed,"spec: id is an integer; expected 400 for 'abc', got GET https://fakestoreapi.com/products/abc -> 200: ''",BUG-005
+FS-PRODUCTS-010,Products,GET /products/categories,positive,Happy path,P0,List categories,-,200; 4 category names,passed,,
+FS-PRODUCTS-011,Products,GET /products/category/{name},positive,Happy path,P2,Products in category belong to it,electronics / men's clothing,only products of that category,passed,,
+FS-PRODUCTS-012,Products,GET /products/category/{name},negative,List,P2,Unknown category returns empty list,unknown category,200 [],passed,,
+FS-PRODUCTS-013,Products,POST /products,positive,Happy path,P0,Create product,"title, price, description, image, category",201; new id; fields echoed,passed,,
+FS-PRODUCTS-014,Products,POST /products,negative,Validation,P2,Create product with empty body returns 400,{},400,failed,"a product with no data should be rejected, got POST https://fakestoreapi.com/products -> 201: '{""id"":21}'",BUG-006
+FS-PRODUCTS-015,Products,POST /products,negative,Validation,P2,Create product with invalid field returns 400,price 'abc' / price -10 / image 'not a url',"400 (spec: number, uri)",failed,"price='abc' should be rejected, got POST https://fakestoreapi.com/products -> 201: '{""id"":21,""title"":""qa_auto product"",""price"":""abc"",""description"":""created by API test"",""image"":""https://i.pravatar.cc"",""category"":""electro",BUG-006
+FS-PRODUCTS-016,Products,POST /products,negative,Validation,P2,Create product with malformed json returns 400,body '{bad json',400,passed,,
+FS-PRODUCTS-017,Products,POST /products,negative,Contract,P2,Malformed json error is returned as json,body '{bad json',"error body is JSON, not an HTML page",failed,"error body is 'text/html; charset=utf-8', not JSON: '<!DOCTYPE html>\n<html lang=""en"">\n<head>\n<meta charset=""utf-8"">\n<title>Error</tit'",BUG-010
+FS-PRODUCTS-018,Products,PUT /products/{id},positive,Happy path,P0,Update product with put,"id=1, title + price","200; id 1, new title",passed,,
+FS-PRODUCTS-019,Products,PATCH /products/{id},positive,Happy path,P2,Update product with patch,"id=1, price 1.25",200; price 1.25,passed,,
+FS-PRODUCTS-020,Products,PUT /products/{id},negative,Error handling,P2,Update nonexistent product returns 4xx,id=9999,400/404,failed,"expected 400/404 for unknown/invalid id, got PUT https://fakestoreapi.com/products/9999 -> 200: '{""id"":9999,""title"":""x""}'",BUG-005
+FS-PRODUCTS-021,Products,PUT /products/{id},negative,Validation,P2,Update product non integer id returns 400,id=abc,400,passed,,
+FS-PRODUCTS-022,Products,PUT /products/{id},negative,Validation,P2,Update product with text price returns 400,price 'abc',400,failed,"price 'abc' should be rejected, got PUT https://fakestoreapi.com/products/1 -> 200: '{""id"":1,""price"":""abc""}'",BUG-006
+FS-PRODUCTS-023,Products,PUT /products/{id},negative,Validation,P2,Id in body does not override url id,"URL id 1, body id 777",product 1 updated (body id ignored) or 400,passed,,
+FS-PRODUCTS-024,Products,DELETE /products/{id},positive,Happy path,P0,Delete product,id=1,200; deleted product,passed,,
+FS-PRODUCTS-025,Products,DELETE /products/{id},negative,Error handling,P2,Delete nonexistent product returns 4xx,id=9999,400/404,failed,"expected 400/404 for unknown/invalid id, got DELETE https://fakestoreapi.com/products/9999 -> 200: ''",BUG-005
+FS-PRODUCTS-026,Products,DELETE /products/{id},negative,Validation,P2,Delete product non integer id returns 400,id=abc,400,passed,,
+FS-PRODUCTS-027,Products,DELETE /products/{id},negative,Security,P1,Delete product without login is rejected,no token,401/403,failed,"anyone can delete a product without logging in: DELETE https://fakestoreapi.com/products/1 -> 200: '{""id"":1,""title"":""Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops"",""price"":109.95,""description"":""Your perfect pack ",BUG-002
+FS-PRODUCTS-028,Products,GET http://.../products/{id},positive,Security,P1,Plain http redirects to https,plain HTTP,301/308 redirect to HTTPS,passed,,
+FS-PRODUCTS-029,Products,GET /products/{id},negative,Security,P1,Response does not reveal server framework,-,no X-Powered-By header,failed,X-Powered-By: Express,BUG-012
+FS-CARTS-001,Carts,GET /carts,positive,Happy path,P0,List all carts,-,200; carts with productId/quantity lines,passed,,
+FS-CARTS-002,Carts,GET /carts,positive,List,P2,Limit and sort carts,limit=2&sort=desc,"2 carts, ids descending",passed,,
+FS-CARTS-003,Carts,GET /carts,positive,List,P2,Date range returns only carts in range,startdate=2020-01-01&enddate=2020-03-01,only carts dated in range,passed,,
+FS-CARTS-004,Carts,GET /carts,negative,Validation,P2,Invalid date format returns 400,startdate=notadate,400 'yyyy-mm-dd',passed,,
+FS-CARTS-005,Carts,GET /carts,negative,List,P2,Reversed date range returns empty list,startdate after enddate,200 [] or 400,passed,,
+FS-CARTS-006,Carts,GET /carts/user/{userId},positive,Happy path,P2,Get carts of a user,userId=2,only carts of user 2,passed,,
+FS-CARTS-007,Carts,GET /carts/user/{userId},negative,Error handling,P2,Carts of unknown user is empty or 4xx,userId=9999,200 [] or 400/404,passed,,
+FS-CARTS-008,Carts,GET /carts/user/{userId},negative,Validation,P2,Carts of non integer user returns 400,userId=abc,400,passed,,
+FS-CARTS-009,Carts,GET /carts/{id},positive,Happy path,P0,Get single cart,id=1,200; cart 1,passed,,
+FS-CARTS-010,Carts,GET /carts/{id},positive,Contract,P2,Single cart matches spec schema,id=1,matches OpenAPI Cart (products[] are Product),failed,jsonschema.exceptions.ValidationError: 'id' is a required property,BUG-008
+FS-CARTS-011,Carts,GET /carts/{id},negative,Error handling,P1,Get nonexistent cart returns 4xx,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown/invalid id, got GET https://fakestoreapi.com/carts/9999 -> 200: 'null'",BUG-005
+FS-CARTS-012,Carts,GET /carts/{id},negative,Validation,P2,Get cart non integer id returns 400,id=abc,400,passed,,
+FS-CARTS-013,Carts,POST /carts,positive,Happy path,P0,Create cart,"userId 1, date, product 1 x2",201; fields echoed,passed,,
+FS-CARTS-014,Carts,POST /carts,negative,Validation,P2,Create cart with empty body returns 400,{},400,failed,"a cart with no user or products should be rejected, got POST https://fakestoreapi.com/carts -> 201: '{""id"":11}'",BUG-006
+FS-CARTS-015,Carts,POST /carts,negative,Validation,P2,Create cart with wrong types returns 400,userId 'abc' / products 'x' / date 'notadate',400,failed,"{'userId': 'abc'} should be rejected, got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":""abc"",""date"":""2026-10-09"",""products"":[{""productId"":1,""quantity"":2}]}'",BUG-006
+FS-CARTS-016,Carts,POST /carts,negative,Validation,P2,Create cart for unknown user is rejected,userId 9999,400/404,failed,"user 9999 does not exist, got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":9999,""date"":""2026-10-09"",""products"":[{""productId"":1,""quantity"":2}]}'",BUG-006
+FS-CARTS-017,Carts,POST /carts,negative,Validation,P2,Create cart with unknown product is rejected,productId 99999,400/404,failed,"product 99999 does not exist, got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":1,""date"":""2026-10-09"",""products"":[{""productId"":99999,""quantity"":1}]}'",BUG-006
+FS-CARTS-018,Carts,POST /carts,negative,Validation,P2,Create cart with invalid quantity returns 400,quantity -2 / 0,400,failed,"quantity -2 should be rejected, got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":1,""date"":""2026-10-09"",""products"":[{""productId"":1,""quantity"":-2}]}'",BUG-006
+FS-CARTS-019,Carts,POST /carts,negative,Security,P1,Create cart without login is rejected,"no token, userId 1",401/403,failed,"anyone can create a cart for user 1 without logging in: POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":1,""date"":""2026-10-09"",""products"":[{""productId"":1,""quantity"":2}]}'",BUG-002
+FS-CARTS-020,Carts,PUT /carts/{id},positive,Happy path,P0,Update cart with put,"id=1, product 2 x3",200; products replaced,passed,,
+FS-CARTS-021,Carts,PATCH /carts/{id},positive,Happy path,P2,Update cart with patch,"id=1, product 5",200; id 1,passed,,
+FS-CARTS-022,Carts,PUT /carts/{id},negative,Error handling,P2,Update nonexistent cart returns 4xx,id=9999,400/404,failed,"expected 400/404 for unknown/invalid id, got PUT https://fakestoreapi.com/carts/9999 -> 200: '{""id"":9999,""userId"":1,""products"":[{""productId"":1,""quantity"":1}]}'",BUG-005
+FS-CARTS-023,Carts,PUT /carts/{id},negative,Validation,P2,Update cart non integer id returns 400,id=abc,400,passed,,
+FS-CARTS-024,Carts,PUT /carts/{id},negative,Validation,P2,Update cart with negative quantity returns 400,quantity -5,400,failed,"quantity -5 should be rejected, got PUT https://fakestoreapi.com/carts/1 -> 200: '{""id"":1,""userId"":1,""products"":[{""productId"":1,""quantity"":-5}]}'",BUG-006
+FS-CARTS-025,Carts,DELETE /carts/{id},positive,Happy path,P0,Delete cart,id=1,200; deleted cart,passed,,
+FS-CARTS-026,Carts,DELETE /carts/{id},negative,Error handling,P2,Delete nonexistent cart returns 4xx,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown/invalid id, got DELETE https://fakestoreapi.com/carts/9999 -> 200: 'null'",BUG-005
+FS-CARTS-027,Carts,DELETE /carts/{id},negative,Validation,P2,Delete cart non integer id returns 400,id=abc,400,passed,,
+FS-USERS-001,Users,GET /users,positive,Happy path,P0,List all users,-,200; 10 users; User schema,passed,,
+FS-USERS-002,Users,GET /users,positive,List,P2,Limit and sort users,limit=3&sort=desc,"users 10, 9, 8",passed,,
+FS-USERS-003,Users,GET /users,negative,Security,P1,User list does not expose passwords,no auth,no 'password' field,failed,"GET /users (no login needed) returns 'password' for user ids [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]",BUG-001
+FS-USERS-004,Users,GET /users/{id},positive,Happy path,P0,Get single user,id=1,200; User schema,passed,,
+FS-USERS-005,Users,GET /users/{id},negative,Error handling,P1,Get nonexistent user returns 4xx,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown/invalid id, got GET https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-005
+FS-USERS-006,Users,GET /users/{id},negative,Validation,P2,Get user non integer id returns 400,id=abc,400,passed,,
+FS-USERS-007,Users,GET /users/{id},negative,Security,P1,Single user does not expose password,"no auth, id=1",no 'password' field,failed,GET /users/1 (no login needed) returns the user's password,BUG-001
+FS-USERS-008,Users,POST /users,positive,Happy path,P0,Create user,"username, email, password",201; numeric id,passed,,
+FS-USERS-009,Users,POST /users,positive,Contract,P2,Create user response returns the user,"username, email, password","201 body is the User (username, email echoed)",failed,"spec: 201 returns the User; response is {'id': 11} (missing ['username', 'email'])",BUG-009
+FS-USERS-010,Users,POST /users,negative,Data integrity,P2,New user never gets an existing users id,5 new users,no new user gets an existing user's id (1-10),failed,"5 new users got ids [1, 11, 11, 11, 1]; 2 reuse an existing user's id",BUG-004
+FS-USERS-011,Users,POST /users,negative,Validation,P2,Create user with empty body returns 400,{},400,failed,"a user with no data should be rejected, got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-006
+FS-USERS-012,Users,POST /users,negative,Validation,P2,Create user with invalid email returns 400,email 'not-an-email',400,failed,"email 'not-an-email' should be rejected, got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-006
+FS-USERS-013,Users,POST /users,negative,Validation,P2,Create user without password returns 400,no password,400,failed,"a user without password should be rejected, got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-006
+FS-USERS-014,Users,POST /users,negative,Validation,P2,Create user with existing username is rejected,username of user 2,400/409 duplicate,failed,"username 'mor_2314' already exists, got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-007
+FS-USERS-015,Users,PUT /users/{id},positive,Happy path,P0,Update user email,"id=2, email",200; email changed,passed,,
+FS-USERS-016,Users,"PUT, PATCH /users/{id}",positive,Contract,P2,Update user response identifies the user,"id=2, username",200 body is the User incl. id 2,failed,spec: 200 returns the User; PUT response has no id: {'username': 'qa_auto_user'},BUG-009
+FS-USERS-017,Users,PUT /users/{id},negative,Error handling,P2,Update nonexistent user returns 4xx,id=9999,400/404,failed,"expected 400/404 for unknown/invalid id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{""email"":""qa_auto@example.com""}'",BUG-005
+FS-USERS-018,Users,PUT /users/{id},negative,Validation,P2,Update user non integer id returns 400,id=abc,400,passed,,
+FS-USERS-019,Users,PUT /users/{id},negative,Validation,P2,Update user with invalid email returns 400,email 'bad',400,failed,"email 'bad' should be rejected, got PUT https://fakestoreapi.com/users/2 -> 200: '{""email"":""bad""}'",BUG-006
+FS-USERS-020,Users,DELETE /users/{id},positive,Happy path,P0,Delete user,id=1,200; deleted user,passed,,
+FS-USERS-021,Users,DELETE /users/{id},negative,Security,P1,Delete response does not expose password,id=1,no 'password' in response,failed,DELETE /users/1 response contains the password,BUG-001
+FS-USERS-022,Users,DELETE /users/{id},negative,Error handling,P2,Delete nonexistent user returns 4xx,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown/invalid id, got DELETE https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-005
+FS-USERS-023,Users,DELETE /users/{id},negative,Validation,P2,Delete user non integer id returns 400,id=abc,400,passed,,
+FS-USERS-024,Users,DELETE /users/{id},negative,Security,P1,Delete user without login is rejected,no token,401/403,failed,"anyone can delete a user account without logging in: DELETE https://fakestoreapi.com/users/1 -> 200: '{""address"":{""geolocation"":{""lat"":""-37.3159"",""long"":""81.1496""},""city"":""kilcoole"",""street"":""new road"",""number"":7682,""zip",BUG-002
+FS-AUTH-001,Auth,POST /auth/login,positive,Happy path,P0,Login with valid credentials,demo user (env FS_USER / FS_PASSWORD),200 + token (spec),failed,"spec documents 200 LoginResponse, got 201",BUG-011
+FS-AUTH-002,Auth,POST /auth/login,positive,Contract,P0,Token is a jwt for the logged in user,demo user,"JWT with user = username, numeric sub",passed,,
+FS-AUTH-003,Auth,POST /auth/login,negative,Security,P1,Token has an expiry,demo user,token has an 'exp' (expiry) claim,failed,"token has no 'exp' claim and never expires: claims ['iat', 'sub', 'user']",BUG-003
+FS-AUTH-004,Auth,POST /auth/login,negative,Auth,P1,Login with wrong password returns 401,wrong password,401,passed,,
+FS-AUTH-005,Auth,POST /auth/login,negative,Auth,P2,Login with unknown username returns 401,unknown username,401,passed,,
+FS-AUTH-006,Auth,POST /auth/login,negative,Auth,P2,Password is case sensitive,password in upper case,401,passed,,
+FS-AUTH-007,Auth,POST /auth/login,negative,Validation,P2,Login without required fields returns 400,{} / username only,400,passed,,
+FS-AUTH-008,Auth,POST /auth/login,negative,Security,P1,Login with malicious or wrong type input is rejected,' OR '1'='1 / numbers,"400/401, no token",passed,,
+FS-AUTH-009,Auth,POST /auth/login,negative,Validation,P2,Login with non json body returns 400,text/plain body,400,passed,,
+FS-AUTH-010,Auth,POST /auth/login,negative,Contract,P2,Login errors are returned as json,wrong password,error body is JSON,failed,"error body is 'text/html; charset=utf-8', not JSON: 'username or password is incorrect'",BUG-010
+FS-AUTH-011,Auth,GET /auth/login,negative,Error handling,P2,Get on login route is not allowed,wrong method,404/405,passed,,
+FS-INTEGRATION-001,Integration,POST /auth/login -> GET /users/{sub},positive,Integration,P0,Token subject is the logged in user,demo user,token subject is the logged-in user,passed,,
+FS-INTEGRATION-002,Integration,POST /auth/login -> GET /carts/user/{sub},positive,Integration,P2,Logged in user can see own carts,demo user,user's own carts returned,passed,,
+FS-INTEGRATION-003,Integration,GET /carts -> GET /products,positive,Integration,P0,Every cart product exists,all carts,every cart product exists,passed,,
+FS-INTEGRATION-004,Integration,GET /carts -> GET /users,positive,Integration,P0,Every cart owner exists,all carts,every cart owner exists,passed,,
+FS-INTEGRATION-005,Integration,GET /carts/user/{id} vs GET /carts,positive,Integration,P2,Carts by user match full cart list,every owner,same carts,passed,,
+FS-INTEGRATION-006,Integration,GET /products/categories vs GET /products,positive,Integration,P2,Category list matches product categories,-,same category set,passed,,
+FS-INTEGRATION-007,Integration,GET /products/category/{name} vs GET /products,positive,Integration,P2,Category endpoint matches product list,every category,same products,passed,,
+FS-INTEGRATION-008,Integration,GET /products/{id} vs GET /products,positive,Integration,P2,Product detail matches list entry,"ids 1, 10, 20",identical records,passed,,
+FS-INTEGRATION-009,Integration,GET /users/{id} vs GET /users,positive,Integration,P2,User detail matches list entry,"ids 1, 5, 10",identical records,passed,,
+FS-INTEGRATION-010,Integration,GET /carts/{id} -> GET /products,positive,Integration,P2,Cart value can be priced from catalogue,cart 1,"cart priced from catalogue, total > 0",passed,,

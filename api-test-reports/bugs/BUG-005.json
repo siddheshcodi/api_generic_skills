@@ -1,6 +1,6 @@
 {
   "bug_id": "BUG-005",
-  "status": "draft",
+  "status": "created",
   "environment": "public",
   "base_url": "https://fakestoreapi.com",
   "reproducibility": "3/3",
@@ -30,5 +30,11 @@
     "headers": {
       "cf-ray": "a47bf94a8a73f548-HKG"
     }
+  },
+  "tracker": {
+    "type": "manual",
+    "id": "BUG-005",
+    "key": "BUG-005",
+    "url": "C:\\Users\\siddhesh.kasar_codit\\Desktop\\demo_api_test\\bug-reports\\BUG-005.md"
   }
 }

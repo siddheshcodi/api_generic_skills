@@ -1,0 +1,6 @@
+# Raw run outputs (regenerated on every run)
+api-test-reports/junit.xml
+api-test-reports/results/
+api-test-reports/bugs/*.payload.json
+.pytest_cache/
+__pycache__/

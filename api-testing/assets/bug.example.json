@@ -1,0 +1,35 @@
+{
+  "bug_id": "BUG-003",
+  "status": "draft",
+  "title": "POST /users returns 500 when email is missing",
+  "description": "When someone creates a new user and forgets to fill in the email, the server crashes and shows a technical error instead of a clear message. It should tell the person \"email is required\" so they can fix it and try again. Right now they get a confusing failure and no user is created.",
+  "severity": "High",
+  "priority": "P1",
+  "environment": "qa",
+  "base_url": "https://qa-api.example.com",
+  "method": "POST",
+  "endpoint": "/users",
+  "test_case_id": "API-USERS-004",
+  "test_case_ids": ["API-USERS-004", "API-USERS-005"],
+  "category": "Input validation",
+  "preconditions": "Valid bearer token for a standard user",
+  "steps": [
+    "Send POST /users with a valid token and body {\"name\": \"qa_auto_1a2b3c4d\"} (no email field)",
+    "Observe the status code and response body"
+  ],
+  "request": {
+    "curl": "curl -X POST 'https://qa-api.example.com/users' -H 'Authorization: Bearer <TOKEN>' -H 'Content-Type: application/json' -d '{\"name\":\"qa_auto_1a2b3c4d\"}'"
+  },
+  "expected": "400 Bad Request with a validation error for 'email' (OpenAPI: email is required in UserCreate)",
+  "actual": "500 Internal Server Error with body {\"error\":\"NullPointerException at UserService\"}",
+  "response": {
+    "status": 500,
+    "time_ms": 142,
+    "headers": {"x-request-id": "7f3c9e2a"},
+    "body": "{\"error\":\"NullPointerException at UserService\"}"
+  },
+  "reproducibility": "3/3",
+  "affected_endpoints": [],
+  "notes": "Response also leaks an internal class name.",
+  "found_at": "2026-10-08T10:15:00Z"
+}

@@ -1,0 +1,33 @@
+# Secrets - never commit
+.env
+.env.*
+*.key
+*_api_key
+.proofhub_api_key
+.trello_*
+secrets/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node / Java (Playwright, REST Assured projects)
+node_modules/
+playwright-report/
+test-results/
+target/
+build/
+
+# Raw run outputs (regenerated on every run; reports like test-report.md can be committed)
+api-test-reports/junit.xml
+api-test-reports/results/
+api-test-reports/bugs/*.payload.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,57 @@
+{
+  "project": "My Project",
+  "environment": "qa (https://qa-api.example.com)",
+  "source": "docs/openapi.yaml v1.4",
+  "author": "QA name / Claude",
+  "date": "2026-10-09",
+  "modules": {
+    "Users": "Create, read and list users. Every user belongs to the caller."
+  },
+  "cases": [
+    {
+      "id": "API-USERS-001",
+      "module": "Users",
+      "endpoint": "POST /users",
+      "title": "Create user with required fields",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "{\"name\": \"qa_auto_x\", \"email\": \"qa_auto_x@example.com\"}",
+      "expected": "201; body has id and the sent email; matches User schema"
+    },
+    {
+      "id": "API-USERS-004",
+      "module": "Users",
+      "endpoint": "POST /users",
+      "title": "Create user without email",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "{\"name\": \"qa_auto_x\"}",
+      "expected": "400/422 with a message about email; never 5xx"
+    },
+    {
+      "id": "API-USERS-010",
+      "module": "Users",
+      "endpoint": "GET /users",
+      "title": "List users without token",
+      "type": "negative",
+      "category": "Auth",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "no Authorization header",
+      "expected": "401"
+    }
+  ],
+  "assumptions": [
+    "(assumed) Duplicate email returns 409 - spec does not say. Confirm with: <who>"
+  ]
+}

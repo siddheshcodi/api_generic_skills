@@ -1,0 +1,118 @@
+# =====================================================================
+#  API TEST CONFIG  — the ONLY file you change per project
+#  Copy to your project root as:  api-test.config.yaml
+#  RULE: never put real secrets here. Put the NAME of an environment
+#        variable (e.g. API_TOKEN) and set the value in your terminal.
+# =====================================================================
+
+project:
+  name: "My Project"
+  module_prefix: "API"            # test IDs look like API-USERS-001
+
+framework: auto                   # auto | pytest | playwright | restassured
+
+api_source:                       # fill whatever exists, leave others ""
+  openapi: ""                     # e.g. docs/openapi.yaml or https://qa-api.example.com/v3/api-docs
+  postman: ""                     # e.g. postman/collection.json (Collection v2.1)
+  docs: ""                        # e.g. docs/api.md or a file of cURL commands
+
+environments:
+  default: qa                     # used when API_ENV is not set
+  qa:
+    base_url: "https://qa-api.example.com"
+    is_production: false
+  staging:
+    base_url: "https://staging-api.example.com"
+    is_production: false
+  prod:
+    base_url: "https://api.example.com"
+    is_production: true           # only read-only tests run here (see testing:)
+
+auth:
+  type: bearer                    # none | bearer | basic | api_key | oauth2_client_credentials | login_endpoint
+  bearer:
+    token_env: "API_TOKEN"
+  basic:
+    username_env: "API_USER"
+    password_env: "API_PASSWORD"
+  api_key:
+    header: "X-API-KEY"
+    value_env: "API_KEY"
+  oauth2_client_credentials:
+    token_url: ""
+    client_id_env: "API_CLIENT_ID"
+    client_secret_env: "API_CLIENT_SECRET"
+    scope: ""
+  login_endpoint:                 # log in with user/password, read token from response
+    method: POST
+    path: "/auth/login"
+    username_env: "API_USER"
+    password_env: "API_PASSWORD"
+    body_template: '{"email": "{username}", "password": "{password}"}'
+    token_json_path: "data.token" # dot path to the token in the login response
+    header: "Authorization"
+    prefix: "Bearer "
+  # Second user for "user A must not see user B's data" tests (optional)
+  secondary_user:
+    token_env: "API_TOKEN_USER_B"
+
+defaults:
+  timeout_seconds: 30
+  max_response_time_ms: 2000      # slower P0 calls are reported as observations
+  default_headers:
+    Accept: "application/json"
+
+testing:
+  allow_destructive_on_production: false
+  cleanup_test_data: true
+  test_data_prefix: "qa_auto_"    # makes test data easy to find and delete
+  reports_dir: "api-test-reports"
+
+# ---------------------------------------------------------------------
+#  BUG TRACKER — pick one type, fill only that section below
+# ---------------------------------------------------------------------
+bug_tracker:
+  type: proofhub                  # proofhub | jira | trello | manual
+  title_prefix: "[API]"           # bug titles look like: [API] [High] POST /users returns 500 ...
+
+proofhub:                         # guide: references/trackers/proofhub.md
+  company: "yourcompany"          # from https://yourcompany.proofhub.com
+  api_key_env: "PROOFHUB_API_KEY"
+  user_agent: "API-Testing-Skill (qa-team@yourcompany.com)"   # required by ProofHub
+  project_id: 0                   # bug_tracker.py lookup projects
+  todolist_id: 0                  # bug_tracker.py lookup todolists --project <id>
+  default_assignees: []           # bug_tracker.py lookup people
+  severity_labels: {Critical: 0, High: 0, Medium: 0, Low: 0}   # bug_tracker.py lookup labels
+  extra_labels: []
+  custom_fields: {}
+  description_format: html
+  task_url_template: ""           # optional, e.g. copied task link with {task_id}
+
+jira:                             # guide: references/trackers/jira.md
+  base_url: "https://yourcompany.atlassian.net"
+  deployment: cloud               # cloud | datacenter
+  email_env: "JIRA_EMAIL"         # cloud only
+  api_token_env: "JIRA_API_TOKEN" # cloud API token, or Data Center Personal Access Token
+  project_key: ""                 # bug_tracker.py lookup projects
+  issue_type: "Bug"
+  severity_to_priority: {Critical: Highest, High: High, Medium: Medium, Low: Low}  # lookup priorities
+  labels: ["api-testing"]
+  add_severity_label: true
+  components: []
+  default_assignee: ""            # cloud accountId / DC username: lookup users --query <name>
+  parent_key: ""
+  custom_fields: {}               # lookup fields
+
+trello:                           # guide: references/trackers/trello.md
+  api_key_env: "TRELLO_API_KEY"
+  token_env: "TRELLO_TOKEN"
+  board_id: ""                    # bug_tracker.py lookup boards
+  list_id: ""                     # bug_tracker.py lookup lists --board <id>
+  severity_labels: {Critical: "", High: "", Medium: "", Low: ""}   # lookup labels --board <id>
+  extra_labels: []
+  default_members: []             # lookup members --board <id>
+  position: top
+
+manual:                           # any other tool: exports Markdown + CSV to paste/import
+  tool_name: "Azure DevOps"
+  output_dir: ""                  # default: <reports_dir>/bugs/export

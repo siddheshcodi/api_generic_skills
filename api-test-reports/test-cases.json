@@ -1,0 +1,569 @@
+{
+  "project": "Fake Store API (demo)",
+  "environment": "public (https://fakestoreapi.com)",
+  "source": "docs/openapi.json (OpenAPI 3.1 from /docs-data)",
+  "author": "Claude (api-testing skill)",
+  "date": "2026-10-09",
+  "modules": {
+    "Products": "Product catalogue: list, filter, read, create, update, delete.",
+    "Carts": "Shopping carts of users: list, read, create, update, delete.",
+    "Users": "Customer accounts: list, read, create, update, delete. Includes sensitive-data checks.",
+    "Auth": "Login that returns a token.",
+    "Integration": "Cross-module flows and data consistency between Auth, Users, Carts and Products (read-only, because this API does not save writes)."
+  },
+  "cases": [
+    {
+      "id": "FS-PRODUCTS-001",
+      "module": "Products",
+      "endpoint": "GET /products",
+      "title": "List all products",
+      "type": "positive",
+      "category": "Happy path / contract",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "no params",
+      "expected": "200, JSON list, every item matches Product schema"
+    },
+    {
+      "id": "FS-PRODUCTS-002",
+      "module": "Products",
+      "endpoint": "GET /products",
+      "title": "Limit the number of products",
+      "type": "positive",
+      "category": "List / pagination",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "?limit=5",
+      "expected": "200 with exactly 5 items"
+    },
+    {
+      "id": "FS-PRODUCTS-003",
+      "module": "Products",
+      "endpoint": "GET /products",
+      "title": "Sort products descending",
+      "type": "positive",
+      "category": "List / sort",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "?sort=desc",
+      "expected": "200, ids in descending order"
+    },
+    {
+      "id": "FS-PRODUCTS-004",
+      "module": "Products",
+      "endpoint": "GET /products/{id}",
+      "title": "Get a single product",
+      "type": "positive",
+      "category": "Happy path / contract",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "id=1",
+      "expected": "200, Product with id 1"
+    },
+    {
+      "id": "FS-PRODUCTS-005",
+      "module": "Products",
+      "endpoint": "GET /products/{id}",
+      "title": "Get a product that does not exist",
+      "type": "negative",
+      "category": "Error handling",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=9999",
+      "expected": "400/404, not an empty 200"
+    },
+    {
+      "id": "FS-PRODUCTS-006",
+      "module": "Products",
+      "endpoint": "GET /products/{id}",
+      "title": "Get a product with a non-numeric id",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=abc",
+      "expected": "400 (spec: id is integer)"
+    },
+    {
+      "id": "FS-PRODUCTS-007",
+      "module": "Products",
+      "endpoint": "POST /products",
+      "title": "Create a product with valid data",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "title, price, description, category, image",
+      "expected": "201, id returned, fields echoed"
+    },
+    {
+      "id": "FS-PRODUCTS-008",
+      "module": "Products",
+      "endpoint": "POST /products",
+      "title": "Create a product with an empty body",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "{}",
+      "expected": "400 (request body is required)"
+    },
+    {
+      "id": "FS-PRODUCTS-009",
+      "module": "Products",
+      "endpoint": "POST /products",
+      "title": "Create a product with malformed JSON",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "body: not json",
+      "expected": "400, never 5xx"
+    },
+    {
+      "id": "FS-PRODUCTS-010",
+      "module": "Products",
+      "endpoint": "PUT /products/{id}",
+      "title": "Update a product",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1, valid body",
+      "expected": "200, title updated"
+    },
+    {
+      "id": "FS-PRODUCTS-011",
+      "module": "Products",
+      "endpoint": "PUT /products/{id}",
+      "title": "Update a product that does not exist",
+      "type": "negative",
+      "category": "Error handling",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=9999",
+      "expected": "400/404"
+    },
+    {
+      "id": "FS-PRODUCTS-012",
+      "module": "Products",
+      "endpoint": "DELETE /products/{id}",
+      "title": "Delete a product",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1",
+      "expected": "200"
+    },
+    {
+      "id": "FS-PRODUCTS-013",
+      "module": "Products",
+      "endpoint": "DELETE /products/{id}",
+      "title": "Delete a product that does not exist",
+      "type": "negative",
+      "category": "Error handling",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=9999",
+      "expected": "400/404"
+    },
+    {
+      "id": "FS-PRODUCTS-014",
+      "module": "Products",
+      "endpoint": "POST /products",
+      "title": "Create a product with text as price",
+      "type": "negative",
+      "category": "Validation / data type",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "price: \"abc\"",
+      "expected": "400 (spec: price is a number)"
+    },
+    {
+      "id": "FS-CARTS-001",
+      "module": "Carts",
+      "endpoint": "GET /carts",
+      "title": "List all carts",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "no params",
+      "expected": "200, non-empty list"
+    },
+    {
+      "id": "FS-CARTS-002",
+      "module": "Carts",
+      "endpoint": "GET /carts/{id}",
+      "title": "Get a single cart matching the documented schema",
+      "type": "positive",
+      "category": "Contract",
+      "priority": "P1",
+      "tags": [
+        "smoke"
+      ],
+      "request": "id=1",
+      "expected": "200, products[] items are Product objects (per spec)"
+    },
+    {
+      "id": "FS-CARTS-003",
+      "module": "Carts",
+      "endpoint": "GET /carts/{id}",
+      "title": "Get a cart that does not exist",
+      "type": "negative",
+      "category": "Error handling",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=9999",
+      "expected": "400/404, not 200 null"
+    },
+    {
+      "id": "FS-CARTS-004",
+      "module": "Carts",
+      "endpoint": "POST /carts",
+      "title": "Create a cart",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "userId=1, products=[...]",
+      "expected": "201 with id"
+    },
+    {
+      "id": "FS-CARTS-005",
+      "module": "Carts",
+      "endpoint": "PUT /carts/{id}",
+      "title": "Update a cart",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1, new products",
+      "expected": "200, products updated"
+    },
+    {
+      "id": "FS-CARTS-006",
+      "module": "Carts",
+      "endpoint": "DELETE /carts/{id}",
+      "title": "Delete a cart",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1",
+      "expected": "200"
+    },
+    {
+      "id": "FS-CARTS-007",
+      "module": "Carts",
+      "endpoint": "POST /carts",
+      "title": "Create a cart with an empty body",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "{}",
+      "expected": "400 (no userId / products)"
+    },
+    {
+      "id": "FS-USERS-001",
+      "module": "Users",
+      "endpoint": "GET /users",
+      "title": "List all users",
+      "type": "positive",
+      "category": "Happy path / contract",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "no params",
+      "expected": "200, every item matches User schema"
+    },
+    {
+      "id": "FS-USERS-002",
+      "module": "Users",
+      "endpoint": "GET /users/{id}",
+      "title": "Get a single user",
+      "type": "positive",
+      "category": "Happy path / contract",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "id=1",
+      "expected": "200, User object"
+    },
+    {
+      "id": "FS-USERS-003",
+      "module": "Users",
+      "endpoint": "GET /users",
+      "title": "User list must not expose passwords",
+      "type": "negative",
+      "category": "Security - sensitive data",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "no auth",
+      "expected": "no 'password' field in any user"
+    },
+    {
+      "id": "FS-USERS-004",
+      "module": "Users",
+      "endpoint": "GET /users/{id}",
+      "title": "Get a user that does not exist",
+      "type": "negative",
+      "category": "Error handling",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=9999",
+      "expected": "400/404, not 200 null"
+    },
+    {
+      "id": "FS-USERS-005",
+      "module": "Users",
+      "endpoint": "POST /users",
+      "title": "Create a user with valid data",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "username, email, password",
+      "expected": "201 with id"
+    },
+    {
+      "id": "FS-USERS-006",
+      "module": "Users",
+      "endpoint": "POST /users",
+      "title": "Create a user with an invalid email",
+      "type": "negative",
+      "category": "Validation / format",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "email: not-an-email",
+      "expected": "400"
+    },
+    {
+      "id": "FS-USERS-007",
+      "module": "Users",
+      "endpoint": "PUT /users/{id}",
+      "title": "Update a user",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1, new username",
+      "expected": "200, username updated"
+    },
+    {
+      "id": "FS-USERS-008",
+      "module": "Users",
+      "endpoint": "DELETE /users/{id}",
+      "title": "Delete a user",
+      "type": "positive",
+      "category": "Happy path",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "id=1",
+      "expected": "200"
+    },
+    {
+      "id": "FS-USERS-009",
+      "module": "Users",
+      "endpoint": "GET, DELETE /users/{id}",
+      "title": "Single-user responses must not expose password",
+      "type": "negative",
+      "category": "Security - sensitive data",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "GET and DELETE /users/1",
+      "expected": "no 'password' field in the response"
+    },
+    {
+      "id": "FS-AUTH-001",
+      "module": "Auth",
+      "endpoint": "POST /auth/login",
+      "title": "Login with valid credentials",
+      "type": "positive",
+      "category": "Happy path / contract",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "demo user (env FS_USER / FS_PASSWORD)",
+      "expected": "200 + token (per spec)"
+    },
+    {
+      "id": "FS-AUTH-002",
+      "module": "Auth",
+      "endpoint": "POST /auth/login",
+      "title": "Login with a wrong password",
+      "type": "negative",
+      "category": "Auth",
+      "priority": "P0",
+      "tags": [
+        "smoke"
+      ],
+      "request": "valid user, wrong password",
+      "expected": "401"
+    },
+    {
+      "id": "FS-AUTH-003",
+      "module": "Auth",
+      "endpoint": "POST /auth/login",
+      "title": "Login with an empty body",
+      "type": "negative",
+      "category": "Validation",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "{}",
+      "expected": "400"
+    },
+    {
+      "id": "FS-AUTH-004",
+      "module": "Auth",
+      "endpoint": "POST /auth/login",
+      "title": "Login with SQL-injection-like input",
+      "type": "negative",
+      "category": "Security",
+      "priority": "P2",
+      "tags": [
+        "regression"
+      ],
+      "request": "' OR '1'='1",
+      "expected": "400/401, no 5xx, no token"
+    },
+    {
+      "id": "FS-AUTH-005",
+      "module": "Auth",
+      "endpoint": "POST /auth/login",
+      "title": "Login with an unknown username",
+      "type": "negative",
+      "category": "Auth",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "qa_auto_nobody",
+      "expected": "401"
+    },
+    {
+      "id": "FS-INTEG-001",
+      "module": "Integration",
+      "endpoint": "POST /auth/login → GET /users → GET /carts",
+      "title": "Logged-in user has a profile and their own carts",
+      "type": "positive",
+      "category": "Integration flow",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "demo user login",
+      "expected": "login gives token; user found in /users; at least one cart with that userId"
+    },
+    {
+      "id": "FS-INTEG-002",
+      "module": "Integration",
+      "endpoint": "GET /carts → GET /products",
+      "title": "Every product in any cart exists in the catalogue",
+      "type": "positive",
+      "category": "Integration flow",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "all carts, all products",
+      "expected": "every cart productId is a real product id"
+    },
+    {
+      "id": "FS-INTEG-003",
+      "module": "Integration",
+      "endpoint": "GET /carts → GET /users",
+      "title": "Every cart belongs to an existing user",
+      "type": "positive",
+      "category": "Integration flow",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "all carts, all users",
+      "expected": "every cart userId is a real user id"
+    },
+    {
+      "id": "FS-INTEG-004",
+      "module": "Integration",
+      "endpoint": "GET /products → GET /products/{id}",
+      "title": "Product list and product detail return the same data",
+      "type": "positive",
+      "category": "Integration flow",
+      "priority": "P1",
+      "tags": [
+        "regression"
+      ],
+      "request": "first 5 products",
+      "expected": "detail equals the list item for each product"
+    }
+  ],
+  "assumptions": [
+    "Writes (POST/PUT/DELETE) are faked by this API and never persisted, so create-then-read chains cannot be tested.",
+    "Spec has no field-level required/min/max rules: is a negative price valid? (POST accepts price -5.)",
+    "GET /products/categories, /products/category/{name} and /carts/user/{id} exist but are not in the spec - coverage gap.",
+    "Malformed JSON and unknown routes return an HTML error page instead of JSON (observation).",
+    "PATCH /products/{id} works (200) but is not documented."
+  ]
+}

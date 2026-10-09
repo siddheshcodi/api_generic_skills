@@ -1,0 +1,34 @@
+{
+  "bug_id": "BUG-005",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T08:20:45Z",
+  "title": "POST /auth/login returns 201 instead of documented 200 on success",
+  "description": "When a user logs in successfully, the system replies with a slightly different success code than the documentation says (\"created\" instead of plain \"OK\"). Login still works, so users won't notice, but apps that check for the exact documented code may wrongly treat a good login as a failure.",
+  "severity": "Low",
+  "priority": "P4",
+  "method": "POST",
+  "endpoint": "/auth/login",
+  "test_case_id": "FS-AUTH-001",
+  "test_case_ids": [
+    "FS-AUTH-001"
+  ],
+  "category": "Response contract",
+  "steps": [
+    "Send POST https://fakestoreapi.com/auth/login with the demo credentials from the Fake Store docs"
+  ],
+  "request": {
+    "curl": "curl -s -X POST 'https://fakestoreapi.com/auth/login' -H 'Content-Type: application/json' -d '{\"username\":\"<USER>\",\"password\":\"<PASSWORD>\"}'"
+  },
+  "expected": "200 OK with LoginResponse (per OpenAPI)",
+  "actual": "201 Created with {\"token\":\"<MASKED_JWT>\"}",
+  "response": {
+    "status": 201,
+    "time_ms": 1028,
+    "headers": {
+      "cf-ray": "a47bf94a8a73f548-HKG"
+    }
+  }
+}

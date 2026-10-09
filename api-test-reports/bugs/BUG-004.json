@@ -1,0 +1,47 @@
+{
+  "bug_id": "BUG-004",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T08:20:45Z",
+  "title": "POST /products, /carts and /users return 201 when the request body is empty or invalid",
+  "description": "The system lets you create products, carts and users with missing or wrong information - an empty form, a price written as text, or an email that is not an email - and says they were created successfully. It should refuse and tell you exactly which detail is missing or wrong. Otherwise broken products, empty carts and unreachable accounts can end up in the store.",
+  "severity": "Medium",
+  "priority": "P3",
+  "method": "POST",
+  "endpoint": "/products",
+  "test_case_id": "FS-PRODUCTS-008",
+  "test_case_ids": [
+    "FS-PRODUCTS-008",
+    "FS-PRODUCTS-014",
+    "FS-CARTS-007",
+    "FS-USERS-006"
+  ],
+  "category": "Input validation",
+  "steps": [
+    "Send POST https://fakestoreapi.com/products with body {}",
+    "Send POST /products with \"price\": \"abc\"",
+    "Send POST /carts with body {}",
+    "Send POST /users with \"email\": \"not-an-email\""
+  ],
+  "request": {
+    "curl": "curl -s -X POST 'https://fakestoreapi.com/products' -H 'Content-Type: application/json' -d '{}'"
+  },
+  "expected": "400 Bad Request naming the missing/invalid field (request bodies are required; price is a number; email must be an email)",
+  "actual": "All return 201 Created: POST /products {} -> {\"id\":21}; price \"abc\" stored as text; POST /carts {} -> {\"id\":11}; POST /users invalid email -> {\"id\":11}",
+  "response": {
+    "status": 201,
+    "time_ms": 909,
+    "headers": {
+      "cf-ray": "a47bf943cc45e60e-SIN"
+    },
+    "body": "{\"id\":21}"
+  },
+  "affected_endpoints": [
+    "POST /products (empty body, price as text)",
+    "POST /carts (empty body)",
+    "POST /users (invalid email)"
+  ],
+  "notes": "Negative price (-5) is also accepted - spec has no min, raised as an open question."
+}

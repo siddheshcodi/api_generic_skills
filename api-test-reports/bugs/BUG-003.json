@@ -1,0 +1,36 @@
+{
+  "bug_id": "BUG-003",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T08:20:45Z",
+  "title": "GET /carts/{id} products items do not match the documented Cart schema",
+  "description": "When you open a shopping cart, the list of items inside it looks different from what the API documentation promises. The documentation says each item comes with full product details (name, price, picture), but the system only sends a product number and quantity. Developers who follow the documentation will build screens that break; either the system or the documentation needs to be fixed so they match.",
+  "severity": "Medium",
+  "priority": "P3",
+  "method": "GET",
+  "endpoint": "/carts/{id}",
+  "test_case_id": "FS-CARTS-002",
+  "test_case_ids": [
+    "FS-CARTS-002"
+  ],
+  "category": "Response contract",
+  "steps": [
+    "Send GET https://fakestoreapi.com/carts/1",
+    "Compare products[] items with OpenAPI Cart.products (array of Product)"
+  ],
+  "request": {
+    "curl": "curl -s 'https://fakestoreapi.com/carts/1'"
+  },
+  "expected": "products[] items match Product (id, title, price, ...) per OpenAPI, or the spec is updated",
+  "actual": "products[] items are {\"productId\":1,\"quantity\":4}; extra undocumented fields 'date' and '__v'",
+  "response": {
+    "status": 200,
+    "time_ms": 666,
+    "headers": {
+      "cf-ray": "a47bf93f9c96108d-HKG"
+    },
+    "body": "{\"id\":1,\"userId\":1,\"date\":\"2020-03-02T00:00:00.000Z\",\"products\":[{\"productId\":1,\"quantity\":4}],\"__v\":0}"
+  }
+}

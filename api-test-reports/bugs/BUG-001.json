@@ -1,0 +1,47 @@
+{
+  "bug_id": "BUG-001",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T08:20:45Z",
+  "title": "GET /users returns every user's plaintext password without authentication",
+  "description": "Anyone on the internet, without logging in, can open the user list and see every customer's password in plain readable text. Passwords should never be shown to anyone, and the user list should only be visible to logged-in, authorised people. Right now a stranger can copy any password and log in as that customer.",
+  "severity": "Critical",
+  "priority": "P1",
+  "method": "GET",
+  "endpoint": "/users",
+  "test_case_id": "FS-USERS-003",
+  "test_case_ids": [
+    "FS-USERS-003",
+    "FS-USERS-009"
+  ],
+  "category": "Security - sensitive data exposure",
+  "preconditions": "None - no token or login needed",
+  "steps": [
+    "Send GET https://fakestoreapi.com/users with no Authorization header",
+    "Inspect any user object: 'password' is in plaintext",
+    "Also GET /users/1 and DELETE /users/1 return the password",
+    "Optional: POST /auth/login with a leaked username/password -> token (account takeover)"
+  ],
+  "request": {
+    "curl": "curl -s 'https://fakestoreapi.com/users'"
+  },
+  "expected": "User responses never contain passwords (plaintext or hashed); user data requires authentication. (The OpenAPI User schema also lists 'password' - the spec should be fixed too.)",
+  "actual": "200 OK without any token; all users include 'password' in plaintext, e.g. {\"id\":1,\"username\":\"johnd\",\"password\":\"<MASKED>\",...}. GET /users/{id} and DELETE /users/{id} return it as well.",
+  "response": {
+    "status": 200,
+    "time_ms": 627,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "cf-ray": "a47bf936bd580b03-HKG"
+    },
+    "body": "{\"id\":1,\"email\":\"john@gmail.com\",\"username\":\"johnd\",\"password\":\"<MASKED>\",...}"
+  },
+  "affected_endpoints": [
+    "GET /users",
+    "GET /users/{id}",
+    "DELETE /users/{id}"
+  ],
+  "notes": "Public demo API with fake data, but the behaviour is a textbook credential exposure."
+}

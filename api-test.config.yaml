@@ -1,0 +1,51 @@
+# =====================================================================
+#  API TEST CONFIG  — the ONLY file you change per project
+#  RULE: never put real secrets here. Put the NAME of an environment
+#        variable and set the value in your terminal.
+# =====================================================================
+
+project:
+  name: "Fake Store API (demo)"
+  module_prefix: "FS"              # test IDs look like FS-PRODUCTS-001
+
+framework: pytest                  # auto | pytest | playwright | restassured
+
+api_source:
+  openapi: "docs/openapi.json"     # downloaded from https://fakestoreapi.com/docs-data
+  postman: ""
+  docs: "https://fakestoreapi.com/docs"
+
+environments:
+  default: public
+  public:
+    base_url: "https://fakestoreapi.com"
+    is_production: false           # public sandbox API; writes are faked and never persisted
+
+auth:
+  type: none                       # endpoints are open; /auth/login is tested on its own
+  login_endpoint:
+    username_env: "FS_USER"        # public demo user from the Fake Store docs
+    password_env: "FS_PASSWORD"
+
+defaults:
+  timeout_seconds: 30
+  max_response_time_ms: 2000
+  default_headers:
+    Accept: "application/json"
+
+testing:
+  allow_destructive_on_production: false
+  cleanup_test_data: false         # the API does not persist POST/PUT/DELETE, nothing to clean
+  test_data_prefix: "qa_auto_"
+  reports_dir: "api-test-reports"
+
+# ---------------------------------------------------------------------
+#  BUG TRACKER — manual export for the demo (nothing is sent anywhere)
+# ---------------------------------------------------------------------
+bug_tracker:
+  type: manual                     # proofhub | jira | trello | manual
+  title_prefix: "[API]"
+
+manual:
+  tool_name: "any bug tracker"
+  output_dir: ""                   # default: api-test-reports/bugs/export

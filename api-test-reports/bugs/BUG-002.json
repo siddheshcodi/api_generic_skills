@@ -1,0 +1,53 @@
+{
+  "bug_id": "BUG-002",
+  "status": "draft",
+  "environment": "public",
+  "base_url": "https://fakestoreapi.com",
+  "reproducibility": "3/3",
+  "found_at": "2026-10-09T08:20:45Z",
+  "title": "GET /products/{id} returns 200 with empty body when product does not exist or id is invalid",
+  "description": "When you ask for a product that does not exist (or type letters instead of a product number), the system answers \"OK, success\" but sends back nothing. It should clearly say \"product not found\" (or \"invalid product number\"). Because it pretends everything worked, apps using it show blank pages or crash instead of a helpful message. The same happens for carts and users, and for updating or deleting things that do not exist.",
+  "severity": "Medium",
+  "priority": "P2",
+  "method": "GET",
+  "endpoint": "/products/{id}",
+  "test_case_id": "FS-PRODUCTS-005",
+  "test_case_ids": [
+    "FS-PRODUCTS-005",
+    "FS-PRODUCTS-006",
+    "FS-PRODUCTS-011",
+    "FS-PRODUCTS-013",
+    "FS-CARTS-003",
+    "FS-USERS-004"
+  ],
+  "category": "Response contract / error handling",
+  "preconditions": "None",
+  "steps": [
+    "Send GET https://fakestoreapi.com/products/9999 (id that does not exist)",
+    "Observe 200 OK with Content-Length: 0",
+    "Send GET https://fakestoreapi.com/products/abc (non-numeric id)",
+    "Observe 200 OK with empty body"
+  ],
+  "request": {
+    "curl": "curl -i 'https://fakestoreapi.com/products/9999'"
+  },
+  "expected": "404 Not Found for an unknown id and 400 Bad Request for a non-numeric id, with a JSON error body. The spec documents only 200 (Product) and 400; a 200 must contain a Product object.",
+  "actual": "200 OK with Content-Type application/json and an empty body (Content-Length: 0). Clients calling response.json() crash.",
+  "response": {
+    "status": 200,
+    "time_ms": 532,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "content-length": "0",
+      "cf-ray": "a47bf93b687ce88a-HKG"
+    },
+    "body": ""
+  },
+  "affected_endpoints": [
+    "GET /products/abc -> 200 empty",
+    "PUT /products/9999 -> 200, echoes a fake product",
+    "DELETE /products/9999 -> 200 empty",
+    "GET /carts/9999 -> 200 'null'",
+    "GET /users/9999 -> 200 'null'"
+  ]
+}

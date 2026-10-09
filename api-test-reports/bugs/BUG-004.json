@@ -15,8 +15,13 @@
   "test_case_ids": [
     "FS-PRODUCTS-008",
     "FS-PRODUCTS-014",
+    "FS-PRODUCTS-018",
     "FS-CARTS-007",
-    "FS-USERS-006"
+    "FS-CARTS-011",
+    "FS-CARTS-012",
+    "FS-USERS-006",
+    "FS-USERS-013",
+    "FS-USERS-014"
   ],
   "category": "Input validation",
   "steps": [
@@ -29,7 +34,7 @@
     "curl": "curl -s -X POST 'https://fakestoreapi.com/products' -H 'Content-Type: application/json' -d '{}'"
   },
   "expected": "400 Bad Request naming the missing/invalid field (request bodies are required; price is a number; email must be an email)",
-  "actual": "All return 201 Created: POST /products {} -> {\"id\":21}; price \"abc\" stored as text; POST /carts {} -> {\"id\":11}; POST /users invalid email -> {\"id\":11}",
+  "actual": "All return 201 Created: POST /products {} -> {\"id\":21}; price \"abc\" stored as text; text/plain body accepted; POST /carts {} / userId \"abc\" / products \"x\" all stored; POST /users {} / invalid email / no password all -> {\"id\":11}",
   "response": {
     "status": 201,
     "time_ms": 909,
@@ -39,9 +44,9 @@
     "body": "{\"id\":21}"
   },
   "affected_endpoints": [
-    "POST /products (empty body, price as text)",
-    "POST /carts (empty body)",
-    "POST /users (invalid email)"
+    "POST /products (empty body, price as text, non-JSON body)",
+    "POST /carts (empty body, userId as text, products not a list)",
+    "POST /users (empty body, invalid email, missing password)"
   ],
   "notes": "Negative price (-5) is also accepted - spec has no min, raised as an open question."
 }

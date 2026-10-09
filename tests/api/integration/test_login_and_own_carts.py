@@ -17,3 +17,15 @@ def test_FS_INTEG_001_logged_in_user_has_profile_and_own_carts(api, login_creds)
 
     carts = [c for c in api.get("/carts").json() if c.get("userId") == me["id"]]
     assert carts, f"user id {me['id']} has no carts"
+
+
+@pytest.mark.regression
+@pytest.mark.positive
+def test_FS_INTEG_005_login_token_identifies_the_same_user(api, login_creds):
+    import base64
+    import json as _json
+    token = api.post("/auth/login", json=login_creds).json()["token"]
+    payload = token.split(".")[1]
+    claims = _json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+    me = next(u for u in api.get("/users").json() if u["username"] == login_creds["username"])
+    assert claims.get("sub") == me["id"], f"token sub={claims.get('sub')} but user id is {me['id']}"

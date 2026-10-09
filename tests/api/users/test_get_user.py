@@ -26,3 +26,10 @@ def test_FS_USERS_004_get_nonexistent_user_is_not_empty_200(api):
 def test_FS_USERS_009_single_user_responses_do_not_expose_password(api, method):
     r = api.request(method, "/users/1")
     assert "password" not in (r.json() or {}), f"{method} /users/1 response contains a password field"
+
+
+@pytest.mark.regression
+@pytest.mark.negative
+def test_FS_USERS_010_get_user_with_non_numeric_id_returns_400(api):
+    r = api.get("/users/abc")
+    assert r.status_code == 400, brief(r)

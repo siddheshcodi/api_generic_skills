@@ -37,3 +37,25 @@ def test_FS_AUTH_004_login_sql_like_input_is_rejected_cleanly(api):
 def test_FS_AUTH_005_login_with_unknown_username_returns_401(api):
     r = api.post("/auth/login", json={"username": "qa_auto_nobody", "password": "whatever1"})
     assert r.status_code == 401, brief(r)
+
+
+@pytest.mark.regression
+@pytest.mark.negative
+def test_FS_AUTH_006_login_without_password_returns_400(api, login_creds):
+    r = api.post("/auth/login", json={"username": login_creds["username"]})
+    assert r.status_code == 400, brief(r)
+
+
+@pytest.mark.regression
+@pytest.mark.negative
+def test_FS_AUTH_007_login_with_numbers_instead_of_text_is_rejected(api):
+    r = api.post("/auth/login", json={"username": 123, "password": 456})
+    assert r.status_code in (400, 401), brief(r)
+
+
+@pytest.mark.smoke
+@pytest.mark.positive
+def test_FS_AUTH_008_login_token_is_a_well_formed_jwt(api, login_creds):
+    token = api.post("/auth/login", json=login_creds).json().get("token", "")
+    parts = token.split(".")
+    assert len(parts) == 3 and all(parts), "token is not a 3-part JWT (header.payload.signature)"

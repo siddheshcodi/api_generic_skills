@@ -17,3 +17,10 @@ def test_FS_CARTS_002_get_single_cart_matches_spec_schema(api):
 def test_FS_CARTS_003_get_nonexistent_cart_is_not_empty_200(api):
     r = api.get("/carts/9999")
     assert r.status_code in (400, 404), f"expected 400/404 for unknown id, got {brief(r)}"
+
+
+@pytest.mark.regression
+@pytest.mark.negative
+def test_FS_CARTS_008_get_cart_with_non_numeric_id_returns_400(api):
+    r = api.get("/carts/abc")
+    assert r.status_code == 400, brief(r)

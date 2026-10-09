@@ -18,7 +18,11 @@
     "FS-PRODUCTS-011",
     "FS-PRODUCTS-013",
     "FS-CARTS-003",
-    "FS-USERS-004"
+    "FS-CARTS-009",
+    "FS-CARTS-010",
+    "FS-USERS-004",
+    "FS-USERS-011",
+    "FS-USERS-012"
   ],
   "category": "Response contract / error handling",
   "preconditions": "None",
@@ -44,10 +48,14 @@
     "body": ""
   },
   "affected_endpoints": [
-    "GET /products/abc -> 200 empty",
+    "GET /products/abc -> 200 empty (PUT/DELETE /products/abc correctly return 400)",
     "PUT /products/9999 -> 200, echoes a fake product",
     "DELETE /products/9999 -> 200 empty",
     "GET /carts/9999 -> 200 'null'",
-    "GET /users/9999 -> 200 'null'"
+    "PUT /carts/9999 -> 200, echoes a fake cart",
+    "DELETE /carts/9999 -> 200 'null'",
+    "GET /users/9999 -> 200 'null'",
+    "PUT /users/9999 -> 200, echoes the sent fields",
+    "DELETE /users/9999 -> 200 'null'"
   ]
 }

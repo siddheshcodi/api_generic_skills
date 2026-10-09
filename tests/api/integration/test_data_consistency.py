@@ -25,3 +25,19 @@ def test_FS_INTEG_004_product_list_and_detail_return_same_data(api):
     for listed in api.get("/products", params={"limit": 5}).json():
         detail = api.get(f"/products/{listed['id']}").json()
         assert detail == listed, f"product {listed['id']}: list and detail differ"
+
+
+@pytest.mark.regression
+@pytest.mark.positive
+def test_FS_INTEG_006_user_list_and_detail_return_same_data(api):
+    for listed in api.get("/users").json()[:5]:
+        detail = api.get(f"/users/{listed['id']}").json()
+        assert detail == listed, f"user {listed['id']}: list and detail differ"
+
+
+@pytest.mark.regression
+@pytest.mark.positive
+def test_FS_INTEG_007_cart_list_and_detail_return_same_data(api):
+    for listed in api.get("/carts").json()[:5]:
+        detail = api.get(f"/carts/{listed['id']}").json()
+        assert detail == listed, f"cart {listed['id']}: list and detail differ"

@@ -13,6 +13,10 @@ FS-PRODUCTS-011,Products,PUT /products/{id},negative,Error handling,P2,Update a 
 FS-PRODUCTS-012,Products,DELETE /products/{id},positive,Happy path,P1,Delete a product,id=1,200,passed,,
 FS-PRODUCTS-013,Products,DELETE /products/{id},negative,Error handling,P2,Delete a product that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got DELETE https://fakestoreapi.com/products/9999 -> 200: ''",BUG-002
 FS-PRODUCTS-014,Products,POST /products,negative,Validation / data type,P2,Create a product with text as price,"price: ""abc""",400 (spec: price is a number),failed,"expected 400 for price 'abc' (spec: number), got POST https://fakestoreapi.com/products -> 201: '{""id"":21,""title"":""qa_auto product"",""price"":""abc"",""description"":""created by API test"",""image"":""https://i.pravatar.cc"",""categ",BUG-004
+FS-PRODUCTS-015,Products,POST /products,negative,Boundary,P3,"Create a product with a 10,000-character title","""title"": ""a"" x 10000",no 5xx (spec sets no max length; 400/413 preferred),passed,,
+FS-PRODUCTS-016,Products,PUT /products/{id},negative,Validation,P2,Update a product with a non-numeric id,id=abc,400,passed,,
+FS-PRODUCTS-017,Products,DELETE /products/{id},negative,Validation,P2,Delete a product with a non-numeric id,id=abc,400,passed,,
+FS-PRODUCTS-018,Products,POST /products,negative,Validation / content type,P2,Create a product with a non-JSON body,"Content-Type text/plain, body title=x",400/415,failed,"expected 400/415 for a text/plain body, got POST https://fakestoreapi.com/products -> 201: '{""id"":21}'",BUG-004
 FS-CARTS-001,Carts,GET /carts,positive,Happy path,P0,List all carts,no params,"200, non-empty list",passed,,
 FS-CARTS-002,Carts,GET /carts/{id},positive,Contract,P1,Get a single cart matching the documented schema,id=1,"200, products[] items are Product objects (per spec)",failed,jsonschema.exceptions.ValidationError: 'id' is a required property,BUG-003
 FS-CARTS-003,Carts,GET /carts/{id},negative,Error handling,P2,Get a cart that does not exist,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown id, got GET https://fakestoreapi.com/carts/9999 -> 200: 'null'",BUG-002
@@ -20,21 +24,37 @@ FS-CARTS-004,Carts,POST /carts,positive,Happy path,P1,Create a cart,"userId=1, p
 FS-CARTS-005,Carts,PUT /carts/{id},positive,Happy path,P1,Update a cart,"id=1, new products","200, products updated",passed,,
 FS-CARTS-006,Carts,DELETE /carts/{id},positive,Happy path,P1,Delete a cart,id=1,200,passed,,
 FS-CARTS-007,Carts,POST /carts,negative,Validation,P1,Create a cart with an empty body,{},400 (no userId / products),failed,"expected 400 for empty cart (no userId/products), got POST https://fakestoreapi.com/carts -> 201: '{""id"":11}'",BUG-004
+FS-CARTS-008,Carts,GET /carts/{id},negative,Validation,P2,Get a cart with a non-numeric id,id=abc,400,passed,,
+FS-CARTS-009,Carts,PUT /carts/{id},negative,Error handling,P2,Update a cart that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got PUT https://fakestoreapi.com/carts/9999 -> 200: '{""id"":9999,""userId"":1,""products"":[{""productId"":1,""quantity"":1}]}'",BUG-002
+FS-CARTS-010,Carts,DELETE /carts/{id},negative,Error handling,P2,Delete a cart that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got DELETE https://fakestoreapi.com/carts/9999 -> 200: 'null'",BUG-002
+FS-CARTS-011,Carts,POST /carts,negative,Validation / data type,P2,Create a cart with text as userId,"""userId"": ""abc""",400 (spec: integer),failed,"expected 400 for userId 'abc' (spec: integer), got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":""abc"",""products"":[]}'",BUG-004
+FS-CARTS-012,Carts,POST /carts,negative,Validation / data type,P2,Create a cart where products is not a list,"""products"": ""x""",400 (spec: array),failed,"expected 400 for products 'x' (spec: array), got POST https://fakestoreapi.com/carts -> 201: '{""id"":11,""userId"":1,""products"":""x""}'",BUG-004
 FS-USERS-001,Users,GET /users,positive,Happy path / contract,P0,List all users,no params,"200, every item matches User schema",passed,,
 FS-USERS-002,Users,GET /users/{id},positive,Happy path / contract,P0,Get a single user,id=1,"200, User object",passed,,
 FS-USERS-003,Users,GET /users,negative,Security - sensitive data,P1,User list must not expose passwords,no auth,no 'password' field in any user,failed,"GET /users returns a password field for user ids [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] (no auth needed)",BUG-001
 FS-USERS-004,Users,GET /users/{id},negative,Error handling,P2,Get a user that does not exist,id=9999,"400/404, not 200 null",failed,"expected 400/404 for unknown id, got GET https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-002
 FS-USERS-005,Users,POST /users,positive,Happy path,P1,Create a user with valid data,"username, email, password",201 with id,passed,,
-FS-USERS-006,Users,POST /users,negative,Validation / format,P1,Create a user with an invalid email,email: not-an-email,400,failed,"expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-004
+FS-USERS-006,Users,POST /users,negative,Validation / format,P1,Create a user with an invalid email,email: not-an-email,400,failed,"expected 400 for email 'not-an-email', got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-004
 FS-USERS-007,Users,PUT /users/{id},positive,Happy path,P1,Update a user,"id=1, new username","200, username updated",passed,,
 FS-USERS-008,Users,DELETE /users/{id},positive,Happy path,P1,Delete a user,id=1,200,passed,,
 FS-USERS-009,Users,"GET, DELETE /users/{id}",negative,Security - sensitive data,P1,Single-user responses must not expose password,GET and DELETE /users/1,no 'password' field in the response,failed,GET /users/1 response contains a password field,BUG-001
+FS-USERS-010,Users,GET /users/{id},negative,Validation,P2,Get a user with a non-numeric id,id=abc,400,passed,,
+FS-USERS-011,Users,PUT /users/{id},negative,Error handling,P2,Update a user that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got PUT https://fakestoreapi.com/users/9999 -> 200: '{""username"":""qa_auto_ecb01b4e""}'",BUG-002
+FS-USERS-012,Users,DELETE /users/{id},negative,Error handling,P2,Delete a user that does not exist,id=9999,400/404,failed,"expected 400/404 for unknown id, got DELETE https://fakestoreapi.com/users/9999 -> 200: 'null'",BUG-002
+FS-USERS-013,Users,POST /users,negative,Validation,P1,Create a user with an empty body,{},400,failed,"expected 400 for empty body, got POST https://fakestoreapi.com/users -> 201: '{""id"":11}'",BUG-004
+FS-USERS-014,Users,POST /users,negative,Validation,P1,Create a user without a password,username + email only,400,failed,"expected 400 when password is missing, got POST https://fakestoreapi.com/users -> 201: '{""id"":1}'",BUG-004
 FS-AUTH-001,Auth,POST /auth/login,positive,Happy path / contract,P0,Login with valid credentials,demo user (env FS_USER / FS_PASSWORD),200 + token (per spec),failed,"spec documents 200 LoginResponse, got 201",BUG-005
 FS-AUTH-002,Auth,POST /auth/login,negative,Auth,P0,Login with a wrong password,"valid user, wrong password",401,passed,,
 FS-AUTH-003,Auth,POST /auth/login,negative,Validation,P1,Login with an empty body,{},400,passed,,
 FS-AUTH-004,Auth,POST /auth/login,negative,Security,P2,Login with SQL-injection-like input,' OR '1'='1,"400/401, no 5xx, no token",passed,,
 FS-AUTH-005,Auth,POST /auth/login,negative,Auth,P1,Login with an unknown username,qa_auto_nobody,401,passed,,
+FS-AUTH-006,Auth,POST /auth/login,negative,Validation,P1,Login without a password,username only,400,passed,,
+FS-AUTH-007,Auth,POST /auth/login,negative,Validation / data type,P2,Login with numbers instead of text,"username 123, password 456","400/401, no token",passed,,
+FS-AUTH-008,Auth,POST /auth/login,positive,Contract,P1,Login token is a well-formed JWT,demo user,token has 3 non-empty parts (header.payload.signature),passed,,
 FS-INTEG-001,Integration,POST /auth/login → GET /users → GET /carts,positive,Integration flow,P1,Logged-in user has a profile and their own carts,demo user login,login gives token; user found in /users; at least one cart with that userId,passed,,
 FS-INTEG-002,Integration,GET /carts → GET /products,positive,Integration flow,P1,Every product in any cart exists in the catalogue,"all carts, all products",every cart productId is a real product id,passed,,
 FS-INTEG-003,Integration,GET /carts → GET /users,positive,Integration flow,P1,Every cart belongs to an existing user,"all carts, all users",every cart userId is a real user id,passed,,
 FS-INTEG-004,Integration,GET /products → GET /products/{id},positive,Integration flow,P1,Product list and product detail return the same data,first 5 products,detail equals the list item for each product,passed,,
+FS-INTEG-005,Integration,POST /auth/login → GET /users,positive,Integration flow,P1,Login token identifies the same user,demo user login,token 'sub' claim equals that user's id in /users,passed,,
+FS-INTEG-006,Integration,GET /users → GET /users/{id},positive,Integration flow,P2,User list and user detail return the same data,first 5 users,detail equals the list item for each user,passed,,
+FS-INTEG-007,Integration,GET /carts → GET /carts/{id},positive,Integration flow,P2,Cart list and cart detail return the same data,first 5 carts,detail equals the list item for each cart,passed,,

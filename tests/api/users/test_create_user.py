@@ -19,3 +19,20 @@ def test_FS_USERS_005_create_user(api, unique):
 def test_FS_USERS_006_create_user_with_invalid_email_returns_400(api, unique):
     r = api.post("/users", json={"username": unique(), "email": "not-an-email", "password": "Passw0rd!"})
     assert r.status_code == 400, f"expected 400 for email 'not-an-email', got {brief(r)}"
+
+
+@pytest.mark.regression
+@pytest.mark.destructive
+@pytest.mark.negative
+def test_FS_USERS_013_create_user_with_empty_body_returns_400(api):
+    r = api.post("/users", json={})
+    assert r.status_code == 400, f"expected 400 for empty body, got {brief(r)}"
+
+
+@pytest.mark.regression
+@pytest.mark.destructive
+@pytest.mark.negative
+def test_FS_USERS_014_create_user_without_password_returns_400(api, unique):
+    name = unique()
+    r = api.post("/users", json={"username": name, "email": f"{name}@example.com"})
+    assert r.status_code == 400, f"expected 400 when password is missing, got {brief(r)}"
